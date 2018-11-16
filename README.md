@@ -99,7 +99,7 @@ fruit-client    spring-boot   1.5.16                                      32s
 oc apply -f fruit-backend/db-service.yml
 ```
 
-- Control as we did before that we have 3 components installed: 2 runtimes and 1 service
+- Control as we did before that we have 3 components installed: 2 Spring Boot runtimes and 1 service
 ```bash
 oc get cp
 NAME             RUNTIME       VERSION   SERVICE         TYPE      CONSUMED BY   AGE
@@ -107,3 +107,40 @@ fruit-backend    spring-boot   1.5.16                                           
 fruit-client     spring-boot   1.5.16                                            2m
 fruit-database                           postgresql-db                           6s
 ```
+
+**WARNING** If the PostgreSQL database has not been yet created before, then wait till the image is downloaded and the container created
+```bash
+
+```
+
+- Inject as ENV variables the parameters of the database to let Spring Boot to create a Datasource's bean to connect to the database using the
+  secret created 
+```bash
+oc apply -f fruit-backend/link-secret-service.yml
+```  
+
+- Inject the endpoint's address of the `fruit backend` application as an ENV Var. This ENV Var will be used as parameter by the Spring Boot application
+  to configure the HTTP client to access the backend
+```bash
+oc apply -f fruit-client/link-env-backend.yml
+``` 
+
+- As we have finished to compose our application `from Spring Boot Http Client` -> to `Spring Boot REST Backend` -> to `PostgreSQL` database, we will 
+  now copy the uber jar files and next start the `client`, `backend` Spring Boot applications
+```bash
+pod_name=$(oc get pod -lapp=fruit-client -o name)
+name=$(cut -d'/' -f2 <<<$pod_name)
+oc cp fruit-client/target/fruit-client-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
+oc rsh $pod_name $supervisordBin $supervisordCtl start $runCmdName
+
+pod_name=$(oc get pod -lapp=fruit-backend -o name)
+name=$(cut -d'/' -f2 <<<$pod_name)
+oc cp fruit-backend/target/fruit-backend-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
+oc rsh $pod_name $supervisordBin $supervisordCtl start $runCmdName
+```   
+
+- Call the HTTP Endpoint exposed by the Spring Boot Client in order to fetch data from the database
+```bash
+
+``` 
+  
