@@ -51,10 +51,10 @@ oc create -f resources/operator.yaml
 
 ### Clean up
 ```bash
-oc delete -f resources/sa.yaml
+oc delete -f resources/sa.yaml -n component-operator
 oc delete -f resources/cluster-rbac.yaml
-oc delete -f resources/crd.yaml
-oc delete -f resources/operator.yaml
+oc delete -f resources/crd.yaml 
+oc delete -f resources/operator.yaml -n component-operator
 ```
 
 ## Demo's time
@@ -79,8 +79,8 @@ mvn package
 cd ..
 ``` 
 
-- Deploy for each microservice, their Component CRs on the cluster and wait till they will be processed by controller 
-  to generate or create the corresponding kubernetes resources such as DeploymentConfig, Pod, Service, Route, ...
+- Deploy for each microservice, their Component CRs on the cluster and wait till they will be processed by the controller 
+  to create the corresponding kubernetes resources such as DeploymentConfig, Pod, Service, Route, ...
 ```bash
 oc apply -f fruit-backend/component.yml
 oc apply -f fruit-client/component.yml
@@ -108,7 +108,7 @@ fruit-client     spring-boot   1.5.16                                           
 fruit-database                           postgresql-db                           6s
 ```
 
-**WARNING** If the PostgreSQL database has not been yet created before, then wait till the image is downloaded and the container created
+**WARNING** If the PostgreSQL database has not been yet created before, then wait till the image is downloaded and the container created !
 ```bash
 
 ```
