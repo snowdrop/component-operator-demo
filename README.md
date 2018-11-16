@@ -59,7 +59,51 @@ oc delete -f resources/operator.yaml
 
 ## Demo's time
 
-- Git clone the demo project to play with a composite application
+- Git clone the project locally to play with a Spring Boot composite application
 ```bash
 git clone https://github.com/snowdrop/component-operator-demo.git && cd component-operator-demo
+```
+
+- Create a new project `my-spring-app`
+```bash
+oc new-project my-spring-app
+```
+
+- Build the `Client` and the `Backend` using `mvn tool` to generate their respective  Spring Boot uber jar file
+```bash
+cd fruit-client
+mvn package
+cd ..
+cd fruit-backend
+mvn package
+cd ..
+``` 
+
+- Deploy for each microservice, their Component CRs on the cluster and wait till they will be processed by controller 
+  to generate or create the corresponding kubernetes resources such as DeploymentConfig, Pod, Service, Route, ...
+```bash
+oc apply -f fruit-backend/component.yml
+oc apply -f fruit-client/component.yml
+```  
+
+- Verify that we have 2 components installed
+```bash
+oc get cpoc get cp
+NAME            RUNTIME       VERSION   SERVICE   TYPE      CONSUMED BY   AGE
+fruit-backend   spring-boot   1.5.16                                      34s
+fruit-client    spring-boot   1.5.16                                      32s
+```
+
+- Create the PostgreSQL database using the `db-service.yml` Component CR
+```bash
+oc apply -f fruit-backend/db-service.yml
+```
+
+- Control as we did before that we have 3 components installed: 2 runtimes and 1 service
+```bash
+oc get cp
+NAME             RUNTIME       VERSION   SERVICE         TYPE      CONSUMED BY   AGE
+fruit-backend    spring-boot   1.5.16                                            2m
+fruit-client     spring-boot   1.5.16                                            2m
+fruit-database                           postgresql-db                           6s
 ```

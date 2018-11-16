@@ -4,6 +4,6 @@ metadata:
   name: fruit-client
 spec:
   deployment: innerloop
-  runtime: springboot # Why ? To inform the operator to use java runtime's image
+  runtime: spring-boot
   version: 1.5.16
-  exposeService: true # Create a Route
+  exposeService: true
