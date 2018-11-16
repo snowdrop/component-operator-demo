@@ -1,17 +1,24 @@
 # Spring Boot Demo
 
-- Git clone the demo project to play with a composite application
-```bash
-git clone 
-```
+ * [Introduction](#introduction)
+ * [Setup](#setup)
+    * [Hetzner remote's cluster](#hetzner-remotes-cluster)
+    * [Local cluster using MiniShift](#local-cluster-using-minishift)
+    * [Clean up](#clean-up)
+ * [Demo's time](#demos-time)
 
-## Use Hetzner's cluster
+
+## Introduction
+
+## Setup
+
+### Hetzner remote's cluster
 ```bash
 oc login https://195.201.87.126:8443 --token=TOKEN_PROVIDED_BY_SNOWDROP_TEAM
 oc project <user_project>
 ```
 
-## Local installation using minishift
+### Local cluster using MiniShift
 
 - Minishift (>= v1.26.1) with Service Catalog feature enabled
 - Launch Minishift VM
@@ -42,10 +49,17 @@ oc create -f resources/crd.yaml
 oc create -f resources/operator.yaml
 ```
 
-## Clean up
+### Clean up
 ```bash
 oc delete -f resources/sa.yaml
 oc delete -f resources/cluster-rbac.yaml
 oc delete -f resources/crd.yaml
 oc delete -f resources/operator.yaml
+```
+
+## Demo's time
+
+- Git clone the demo project to play with a composite application
+```bash
+git clone https://github.com/snowdrop/component-operator-demo.git && cd component-operator-demo
 ```
