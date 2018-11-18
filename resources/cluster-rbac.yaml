@@ -61,6 +61,18 @@ rules:
   - servicebindings
   verbs:
   - "*"
+#- apiGroups:
+#  - authorization.k8s.io
+#  resources:
+#  - subjectaccessreviews
+#  verbs:
+#  - "*"
+- apiGroups:
+  - automationbroker.io
+  resources:
+  - "*"
+  verbs:
+  - "*"
 - apiGroups:
   - policy
   resources:
