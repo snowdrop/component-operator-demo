@@ -43,9 +43,9 @@ the parameters which are needed to configure the Spring Boot Datasource's bean.
 The deployment or installation of the application in a namespace will consist in to create the resources on the platform using some `Component` yaml resource files defined according to the 
 [Component API spec](https://github.com/snowdrop/component-operator/blob/master/pkg/apis/component/v1alpha1/component_types.go#L11).
 When they will be created, then the `Component operator` which is a Kubernetes [controller](https://goo.gl/D8iE2K) will execute different operations to create : 
-- For the `component-runtime` a development's pod running a `supervisord's daemon` able to start/stop the application [1](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/innerloop/install.go#L56) and where we can push the `uber jar` file compiled locally, 
-- A Service using the OpenShift Automation Broker and the Kubernetes Service Catalog [2](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/servicecatalog/install.go),
-- `EnvVar` section for the development's pod [3](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/link/link.go#L56).
+- For the `component-runtime` a development's pod running a `supervisord's daemon` able to start/stop the application [**[1]**](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/innerloop/install.go#L56) and where we can push the `uber jar` file compiled locally, 
+- A Service using the OpenShift Automation Broker and the Kubernetes Service Catalog [**[2]**](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/servicecatalog/install.go),
+- `EnvVar` section for the development's pod [**[3]**](https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/link/link.go#L56).
 
 ## Setup
 
