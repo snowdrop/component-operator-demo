@@ -7,8 +7,9 @@
     * [Clean up](#clean-up)
  * [Demo's time](#demos-time)
 
-
 ## Introduction
+
+TODO : Add instroduction like also a picture showing what the composite application will look like
 
 ## Setup
 
