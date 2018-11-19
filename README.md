@@ -20,7 +20,7 @@
 ## Introduction
 
 The purpose of this demo is to showcase how you can use `Component CRD` and a Kubernetes `operator` deployed on OpenShift to help you to install your Microservices Spring Boot 
-application, instantiate a database using a Kubernetes Service Catalog and inject the required information for the different Microservices to let a Spring Boot application to access/consume different services.
+application, instantiate a database using a Kubernetes Service Catalog and inject the required information to the different Microservices to let a Spring Boot application to access/consume a service (http endpoint, database, ...).
 
 The demo's project consists, as depicted within the following diagram, of two Spring Boot applications and a PostgreSQL Database.
 
@@ -30,12 +30,26 @@ The application to be deployed can be described using a Fluent DSL syntax as :
 
 `(from:componentA).(to:componentB).(to:serviceA)`
 
-where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend`. The relation `from -> to` indicates that we will `reference` the `ComponentA` 
-with the `ComponentB` using a `Link`. The `link`'s purpose is to inject as `Env var(s)` the information required to either configure the `HTTP client` of the `ComponentA` to access the 
-`ComponentB` which expose the logic of the backend's system (as CRUD REST operations).
-To let the `ComponentB`, we will also setup a link in oder to pass from the Secret of the service instance created from the K8s catalog the parameters whic are needed to configure the Datasource's bean
+where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend`.
 
-The deployment of the application, will simply consosts in to install the `Component`'s resource file using the OpenShift's client
+The relation `from -> to` indicates that we will `reference` the `ComponentA` 
+with the `ComponentB` using a `Link`.
+
+The `link`'s purpose is to inject as `Env var(s)` the information required to by example configure the `HTTP client` of the `ComponentA` to access the 
+`ComponentB` which exposes the logic of the backend's system as CRUD REST operations.
+To let the `ComponentB` to access the database, we will also setup a link in oder to pass from the `Secret` of the service instance created from a K8s catalog
+the parameters which are needed to configure the Spring Boot Datasource's bean.
+
+The deployment or installation of the application in a namespace will consist in to create the resources on the platform using some `Component` yaml resource files defined according to the 
+[Component API spec](https://github.com/snowdrop/component-operator/blob/master/pkg/apis/component/v1alpha1/component_types.go#L11).
+When they will be created, then the `Component operator` which is a Kubernetes [controller](https://goo.gl/D8iE2K) will execute different operations to create : 
+- For the `component-runtime` a development's pod running a `supervisord's daemon` able to start/stop the application [1] and where we can push the `uber jar` file compiled locally, 
+- A Service using the OpenShift Automation Broker and the Kubernetes Service Catalog [2],
+- `EnvVar` section for the development's pod [3].
+
+[1] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/innerloop/install.go#L56
+[2] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/servicecatalog/install.go
+[3] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/link/link.go#L56
 
 ## Setup
 
