@@ -43,6 +43,12 @@ rules:
   verbs:
   - "*"
 - apiGroups:
+  - apps.openshift.io
+  resources:
+  - deploymentconfigs/instantiate
+  verbs:
+  - "create"
+- apiGroups:
   - route.openshift.io
   resources:
   - routes
@@ -64,9 +70,9 @@ rules:
 - apiGroups:
   - automationbroker.io
   resources:
-  - "*"
+  - "access"
   verbs:
-  - "*"
+  - "create"
 - apiGroups:
   - policy
   resources:
