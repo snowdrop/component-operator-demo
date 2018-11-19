@@ -6,6 +6,7 @@
     * [Local cluster using MiniShift](#local-cluster-using-minishift)
     * [Clean up](#clean-up)
  * [Demo's time](#demos-time)
+ * [Cleanup demo](#cleanup-demo)
 
 ## Introduction
 
