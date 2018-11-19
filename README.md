@@ -1,24 +1,25 @@
 # Spring Boot Demo
 
- * [Introduction](#introduction)
- * [Setup](#setup)
-    * [Hetzner remote's cluster](#hetzner-remotes-cluster)
-    * [Local cluster using MiniShift](#local-cluster-using-minishift)
-    * [Clean up](#clean-up)
- * [Demo's time](#demos-time)
-    * [Install the project](#install-the-project)
-    * [Build code](#build-code)
-    * [Install the components](#install-the-components)
-    * [Create the database's service usign the Catalog](#create-the-databases-service-usign-the-catalog)
-    * [Link the components](#link-the-components)
-    * [Push the code and start the Spring Boot application](#push-the-code-and-start-the-spring-boot-application)
-    * [Check if the Component Client is replying](#check-if-the-component-client-is-replying)
- * [Cleanup demo](#cleanup-demo)
+  * [Introduction](#introduction)
+  * [Setup](#setup)
+     * [Hetzner remote's cluster](#hetzner-remotes-cluster)
+     * [Local cluster using MiniShift](#local-cluster-using-minishift)
+  * [Demo's time](#demos-time)
+     * [Install the project](#install-the-project)
+     * [Build code](#build-code)
+     * [Install the components](#install-the-components)
+     * [Create the database's service usign the Catalog](#create-the-databases-service-usign-the-catalog)
+     * [Link the components](#link-the-components)
+     * [Push the code and start the Spring Boot application](#push-the-code-and-start-the-spring-boot-application)
+     * [Check if the Component Client is replying](#check-if-the-component-client-is-replying)
+  * [Cleanup](#cleanup)
+     * [Demo components](#demo-components)
+     * [Operator and CRD resources](#operator-and-crd-resources)
 
 
 ## Introduction
 
-TODO : Add instroduction like also a picture showing what the composite application will look like
+TODO : Add introduction like also a picture showing what the composite application will looks like
 
 ## Setup
 
@@ -57,14 +58,6 @@ oc create -f resources/sa.yaml
 oc create -f resources/cluster-rbac.yaml
 oc create -f resources/crd.yaml
 oc create -f resources/operator.yaml
-```
-
-### Clean up
-```bash
-oc delete -f resources/sa.yaml -n component-operator
-oc delete -f resources/cluster-rbac.yaml
-oc delete -f resources/crd.yaml 
-oc delete -f resources/operator.yaml -n component-operator
 ```
 
 ## Demo's time
@@ -173,7 +166,9 @@ http http://$route_address/api/client/2
 http http://$route_address/api/client/3
 ``` 
 
-## Cleanup demo
+## Cleanup
+
+### Demo components
 
 ```bash
 oc delete cp/fruit-backend
@@ -182,5 +177,14 @@ oc delete cp/fruit-database-config
 
 oc delete cp/fruit-client
 oc delete cp/fruit-endpoint
+```
+
+### Operator and CRD resources
+
+```bash
+oc delete -f resources/sa.yaml -n component-operator
+oc delete -f resources/cluster-rbac.yaml
+oc delete -f resources/crd.yaml 
+oc delete -f resources/operator.yaml -n component-operator
 ```
   
