@@ -94,9 +94,18 @@ fruit-backend   spring-boot   1.5.16                                      34s
 fruit-client    spring-boot   1.5.16                                      32s
 ```
 
-- Create the PostgreSQL database using the `db-service.yml` Component CR
+- Create the `PostgreSQL database` using the `db-service.yml` Component CR
 ```bash
 oc apply -f fruit-backend/db-service.yml
+```
+
+**WARNING** As this process is performed asynchrounously and is managed by the Kubernetes Service Catalog controller in combination with the Service Broker, then this process can take time !
+
+**Remark** Use the following command to check the status of the instance which, at the end of the installation process, should be equal to `ready`
+```bash
+oc get serviceinstance/postgresql-db
+NAME            CLASS                                   PLAN      STATUS    AGE
+postgresql-db   ClusterServiceClass/dh-postgresql-apb   dev       Ready     3m
 ```
 
 - Control as we did before that we have 3 components installed: 2 Spring Boot runtimes and 1 service
@@ -106,11 +115,6 @@ NAME             RUNTIME       VERSION   SERVICE         TYPE      CONSUMED BY  
 fruit-backend    spring-boot   1.5.16                                            2m
 fruit-client     spring-boot   1.5.16                                            2m
 fruit-database                           postgresql-db                           6s
-```
-
-**WARNING** If the PostgreSQL database has not been yet created before, then wait till the image is downloaded and the container created !
-```bash
-
 ```
 
 - Inject as ENV variables the parameters of the database to let Spring Boot to create a Datasource's bean to connect to the database using the
@@ -143,4 +147,15 @@ oc rsh $pod_name $supervisordBin $supervisordCtl start $runCmdName
 ```bash
 
 ``` 
+
+## Cleanup demo
+
+```bash
+oc delete cp/fruit-backend
+oc delete cp/fruit-database
+oc delete cp/fruit-database-config
+
+oc delete cp/fruit-client
+oc delete cp/fruit-endpoint
+```
   
