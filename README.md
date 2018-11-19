@@ -123,7 +123,7 @@ oc apply -f fruit-client/component.yml
 
 - Verify that we have 2 components installed
 ```bash
-oc get cpoc get cp
+oc get components
 NAME            RUNTIME       VERSION   SERVICE   TYPE      CONSUMED BY   AGE
 fruit-backend   spring-boot   1.5.16                                      34s
 fruit-client    spring-boot   1.5.16                                      32s
@@ -147,7 +147,7 @@ postgresql-db   ClusterServiceClass/dh-postgresql-apb   dev       Ready     3m
 
 - Control as we did before that we have 3 components installed: 2 Spring Boot runtimes and 1 service
 ```bash
-oc get cp
+oc get components
 NAME             RUNTIME       VERSION   SERVICE         TYPE      CONSUMED BY   AGE
 fruit-backend    spring-boot   1.5.16                                            2m
 fruit-client     spring-boot   1.5.16                                            2m
