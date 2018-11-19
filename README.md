@@ -19,9 +19,23 @@
 
 ## Introduction
 
-TODO : Add introduction like also a picture showing what the composite application will looks like
+The purpose of this demo is to showcase how you can use `Component CRD` and a Kubernetes `operator` deployed on OpenShift to help you to install your Microservices Spring Boot 
+application, instantiate a database using a Kubernetes Service Catalog and inject the required information for the different Microservices to let a Spring Boot application to access/consume different services.
+
+The demo's project consists, as depicted within the following diagram, of two Spring Boot applications and a PostgreSQL Database.
 
 ![Composition](component-operator-demo2.png)
+
+The application to be deployed can be described using a Fluent DSL syntax as :
+
+`(from:componentA).(to:componentB).(to:serviceA)`
+
+where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend`. The relation `from -> to` indicates that we will `reference` the `ComponentA` 
+with the `ComponentB` using a `Link`. The `link`'s purpose is to inject as `Env var(s)` the information required to either configure the `HTTP client` of the `ComponentA` to access the 
+`ComponentB` which expose the logic of the backend's system (as CRUD REST operations).
+To let the `ComponentB`, we will also setup a link in oder to pass from the Secret of the service instance created from the K8s catalog the parameters whic are needed to configure the Datasource's bean
+
+The deployment of the application, will simply consosts in to install the `Component`'s resource file using the OpenShift's client
 
 ## Setup
 
