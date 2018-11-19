@@ -21,6 +21,8 @@
 
 TODO : Add introduction like also a picture showing what the composite application will looks like
 
+![Composition](component-operator-demo.png)
+
 ## Setup
 
 ### Hetzner remote's cluster
