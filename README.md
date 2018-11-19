@@ -130,22 +130,30 @@ oc apply -f fruit-client/link-env-backend.yml
 ``` 
 
 - As we have finished to compose our application `from Spring Boot Http Client` -> to `Spring Boot REST Backend` -> to `PostgreSQL` database, we will 
-  now copy the uber jar files and next start the `client`, `backend` Spring Boot applications
+  now copy the uber jar files, and next start the `client`, `backend` Spring Boot applications. Execute the following commands : 
 ```bash
 pod_name=$(oc get pod -lapp=fruit-client -o name)
 name=$(cut -d'/' -f2 <<<$pod_name)
 oc cp fruit-client/target/fruit-client-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
-oc rsh $pod_name $supervisordBin $supervisordCtl start $runCmdName
+oc rsh $pod_name /var/lib/supervisord/bin/supervisord ctl start run-java
 
 pod_name=$(oc get pod -lapp=fruit-backend -o name)
 name=$(cut -d'/' -f2 <<<$pod_name)
 oc cp fruit-backend/target/fruit-backend-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
-oc rsh $pod_name $supervisordBin $supervisordCtl start $runCmdName
+oc rsh $pod_name /var/lib/supervisord/bin/supervisord ctl start run-java
 ```   
 
-- Call the HTTP Endpoint exposed by the Spring Boot Client in order to fetch data from the database
+- Call the HTTP Endpoint exposed by the `Spring Boot Fruit Client` in order to fetch data from the database
 ```bash
+route_address=$(oc get route/fruit-client -o jsonpath='{.spec.host}' )
+curl http://$route_address/api/client
+or 
 
+using httpie client
+http http://$route_address/api/client
+http http://$route_address/api/client/1
+http http://$route_address/api/client/2
+http http://$route_address/api/client/3
 ``` 
 
 ## Cleanup demo
