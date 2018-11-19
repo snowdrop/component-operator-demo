@@ -154,15 +154,8 @@ oc apply -f fruit-client/link-env-backend.yml
 - As we have finished to compose our application `from Spring Boot Http Client` -> to `Spring Boot REST Backend` -> to `PostgreSQL` database, we will 
   now copy the uber jar files, and next start the `client`, `backend` Spring Boot applications. Execute the following commands : 
 ```bash
-pod_name=$(oc get pod -lapp=fruit-client -o name)
-name=$(cut -d'/' -f2 <<<$pod_name)
-oc cp fruit-client/target/fruit-client-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
-oc rsh $pod_name /var/lib/supervisord/bin/supervisord ctl start run-java
-
-pod_name=$(oc get pod -lapp=fruit-backend -o name)
-name=$(cut -d'/' -f2 <<<$pod_name)
-oc cp fruit-backend/target/fruit-backend-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
-oc rsh $pod_name /var/lib/supervisord/bin/supervisord ctl start run-java
+./push_start.sh fruit-client
+./push_start.sh fruit-backend
 ```   
 
 ### Check if the Component Client is replying
