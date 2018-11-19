@@ -48,7 +48,9 @@ When they will be created, then the `Component operator` which is a Kubernetes [
 - `EnvVar` section for the development's pod [3].
 
 [1] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/innerloop/install.go#L56
+
 [2] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/servicecatalog/install.go
+
 [3] - https://github.com/snowdrop/component-operator/blob/master/pkg/pipeline/link/link.go#L56
 
 ## Setup
