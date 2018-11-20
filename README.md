@@ -69,14 +69,11 @@ minishift openshift component add service-catalog
 minishift openshift component add automation-service-broker
 ```
 
-- Add `Cluster Admin` role to the admin user
+- Login to MiniShift using `admin`'s user
 ```bash
-oc login -u system:admin
-oc adm policy add-cluster-role-to-user cluster-admin admin
-oc login -u admin -p admin
+oc login https://$(minishift ip):8443 -u admin -p admin
 ```
-
-- Deploy the resources within the namespace `component-operator`
+- Deploy the resources within the namespace `component-operator` 
 
 ```bash
 oc new-project component-operator
@@ -89,6 +86,11 @@ oc create -f resources/operator.yaml
 ## Demo's time
 
 ### Install the project
+
+- Login to the OpenShift's cluster
+```bash
+oc login https://ip_address_or_hostname_fqqn>:8443 -u <user> -p <password
+```
 
 - Git clone the project locally to play with a Spring Boot composite application
 ```bash
