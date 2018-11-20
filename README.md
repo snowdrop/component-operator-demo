@@ -136,7 +136,7 @@ fruit-client    spring-boot   1.5.16                                      32s
 
 - Create the `PostgreSQL database` using the `db-service.yml` Component CR
 ```bash
-oc apply -f fruit-backend/db-service.yml
+oc apply -f database/service.yml
 ```
 
 **WARNING** As this process is performed asynchrounously and is managed by the Kubernetes Service Catalog controller in combination with the Service Broker, then this process can take time !
