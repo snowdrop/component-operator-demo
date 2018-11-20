@@ -162,13 +162,13 @@ fruit-database                           postgresql-db                          
 - Inject as ENV variables the parameters of the database to let Spring Boot to create a Datasource's bean to connect to the database using the
   secret created 
 ```bash
-oc apply -f fruit-backend/link-secret-service.yml
+oc apply -f link/env-secret-service.yml
 ```  
 
 - Inject the endpoint's address of the `fruit backend` application as an ENV Var. This ENV Var will be used as parameter by the Spring Boot application
   to configure the HTTP client to access the backend
 ```bash
-oc apply -f fruit-client/link-env-backend.yml
+oc apply -f link/env-backend-endpoint.yml
 ``` 
 
 ### Push the code and start the Spring Boot application
