@@ -195,6 +195,26 @@ http http://$route_address/api/client/2
 http http://$route_address/api/client/3
 ``` 
 
+### Nodejs deployment
+
+- Build node project locally
+```bash
+cd fruit-client-nodejs
+nvm use v10.1.0
+npm install -s --only=production
+npm audit fix
+```
+
+- Deploy the node's component
+```bash
+oc apply -f fruit-client-nodejs/component.yml
+```
+
+- Push the code and start the nodejs application
+```bash
+./push_node.sh fruit-client nodejs
+```
+
 ## Cleanup
 
 ### Demo components

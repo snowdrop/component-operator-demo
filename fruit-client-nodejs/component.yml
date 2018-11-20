@@ -8,5 +8,5 @@ spec:
   version: v10
   exposeService: true
   envs:
-  - name: SPRING_PROFILES_ACTIVE
-    value: openshift-catalog
+  - name: NPM_RUN
+    value: start
