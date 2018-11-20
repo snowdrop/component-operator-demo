@@ -79,6 +79,7 @@ oc login https://$(minishift ip):8443 -u admin -p admin
 oc new-project component-operator
 oc create -f resources/sa.yaml
 oc create -f resources/cluster-rbac.yaml
+oc create -f resources/user-rbac.yaml
 oc create -f resources/crd.yaml
 oc create -f resources/operator.yaml
 ```
