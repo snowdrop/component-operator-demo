@@ -1,0 +1,12 @@
+apiVersion: component.k8s.io/v1alpha1
+kind: Component
+metadata:
+  name: fruit-client
+spec:
+  deployment: innerloop
+  runtime: nodejs
+  version: v10
+  exposeService: true
+  envs:
+  - name: SPRING_PROFILES_ACTIVE
+    value: openshift-catalog

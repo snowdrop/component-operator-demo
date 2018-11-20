@@ -9,7 +9,7 @@ oc apply -f nodejs-client/.openshiftio/application.yaml
 oc start-build nodejs-rest-http --from-dir=. --follow
 ```
 
-## Build localy 
+## Build locally 
 ```bash
 nvm use v10.1.0
 npm install -s --only=production

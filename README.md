@@ -121,7 +121,7 @@ cd ..
   to create the corresponding kubernetes resources such as DeploymentConfig, Pod, Service, Route, ...
 ```bash
 oc apply -f fruit-backend/component.yml
-oc apply -f fruit-client/component.yml
+oc apply -f fruit-client-sb/component.yml
 ```  
 
 - Verify that we have 2 components installed
