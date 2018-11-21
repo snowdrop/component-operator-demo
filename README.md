@@ -201,8 +201,8 @@ http http://$route_address/api/client/3
 ```bash
 cd fruit-client-nodejs
 nvm use v10.1.0
-npm install -s --only=production
 npm audit fix
+npm install -s --only=production
 ```
 
 - Deploy the node's component
