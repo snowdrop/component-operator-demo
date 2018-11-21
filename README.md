@@ -30,7 +30,7 @@ The application to be deployed can be described using a Fluent DSL syntax as :
 
 `(from:componentA).(to:componentB).(to:serviceA)`
 
-where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend-sb`.
+where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client-sb` and `fruit-backend-sb`.
 
 The relation `from -> to` indicates that we will `reference` the `ComponentA` 
 with the `ComponentB` using a `Link`.
@@ -184,7 +184,7 @@ oc apply -f link/env-backend-endpoint.yml
 
 - Call the HTTP Endpoint exposed by the `Spring Boot Fruit Client` in order to fetch data from the database
 ```bash
-route_address=$(oc get route/fruit-client -o jsonpath='{.spec.host}' )
+route_address=$(oc get route/fruit-client-sb -o jsonpath='{.spec.host}' )
 curl http://$route_address/api/client
 or 
 
@@ -229,7 +229,7 @@ http :8080/api/client
 http :8080/api/client/1 
 
 #Remotely
-route_address=$(oc get route/fruit-client -o jsonpath='{.spec.host}' )
+route_address=$(oc get route/fruit-client-nodejs -o jsonpath='{.spec.host}' )
 curl http://$route_address/api/client
 or 
 
