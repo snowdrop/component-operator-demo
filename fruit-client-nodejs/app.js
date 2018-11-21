@@ -30,13 +30,17 @@ const endpoint = process.env.OPENSHIFT_ENDPOINT_FRUIT;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', express.static(path.join(__dirname, 'public')));
-// Expose the license.html at http[s]://[host]:[port]/licences/licenses.html
-app.use('/licenses', express.static(path.join(__dirname, 'licenses')));
 
-app.use('/api/client', (req, resp) => {
-    const id = req.params ? req.params.id : undefined; // ????
-    console.log("params", req.params)
-    const params = {id: id}
+app.use('/api/client/', (req, resp) => {
+    var x = request(endpoint)
+    req.pipe(x)
+    x.pipe(resp)
+});
+
+app.use('/api/client/:id', (req, resp) => {
+    const id = req.params ? req.params.id : undefined;
+    console.log("params", req.params);
+    const params = {id: id};
     var x = request({url:endpoint, qs:params})
     req.pipe(x)
     x.pipe(resp)

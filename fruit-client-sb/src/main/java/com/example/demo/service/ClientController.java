@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.demo;
+package com.example.demo.service;
 
+import com.example.demo.Fruit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -36,7 +37,7 @@ public class ClientController {
     }
 
     @GetMapping("/client/{id}")
-    public Fruit getFruitById(@PathVariable String id) {
+    public com.example.demo.Fruit getFruitById(@PathVariable String id) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(endPoint + suffix, Fruit.class, id);
     }
