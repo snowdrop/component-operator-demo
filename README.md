@@ -88,9 +88,9 @@ oc create -f resources/operator.yaml
 
 ### Install the project
 
-- Login to the OpenShift's cluster
+- Login to the OpenShift's cluster using your favorite user
 ```bash
-oc login https://ip_address_or_hostname_fqqn>:8443 -u <user> -p <password
+oc login https://ip_address_or_hostname_fqdn>:8443 -u <user> -p <password
 ```
 
 - Git clone the project locally to play with a Spring Boot composite application
@@ -176,8 +176,8 @@ oc apply -f link/env-backend-endpoint.yml
 - As we have finished to compose our application `from Spring Boot Http Client` -> to `Spring Boot REST Backend` -> to `PostgreSQL` database, we will 
   now copy the uber jar files, and next start the `client`, `backend` Spring Boot applications. Execute the following commands : 
 ```bash
-./push_start.sh fruit-client
-./push_start.sh fruit-backend
+./push_start.sh fruit-client sb
+./push_start.sh fruit-backend sb
 ```   
 
 ### Check if the Component Client is replying
@@ -211,14 +211,15 @@ export OPENSHIFT_ENDPOINT_FRUIT=http://fruit-backend.my-spring-app.195.201.87.12
 npm run -d start      
 ```
 
-- Deploy the node's component
+- Deploy the node's component and link it to the Spring Boot fruit backend
 ```bash
 oc apply -f fruit-client-nodejs/component.yml
+oc apply -f link/env-backend-endpoint.yml
 ```
 
 - Push the code and start the nodejs application
 ```bash
-./push_node.sh fruit-client nodejs
+./push_start.sh fruit-client nodejs
 ```
 
 - Test it locally or remotely
@@ -227,7 +228,16 @@ oc apply -f fruit-client-nodejs/component.yml
 http :8080/api/client
 http :8080/api/client/1 
 
+#Remotely
+route_address=$(oc get route/fruit-client -o jsonpath='{.spec.host}' )
+curl http://$route_address/api/client
+or 
 
+using httpie client
+http http://$route_address/api/client
+http http://$route_address/api/client/1
+http http://$route_address/api/client/2
+http http://$route_address/api/client/3
 ```
 
 ## Cleanup
