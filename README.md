@@ -207,7 +207,7 @@ npm install -s --only=production
 
 - Run locally
 ```bash
- export OPENSHIFT_ENDPOINT_FRUIT=http://spring-boot-generator.195.201.87.126.nip.io/config
+export OPENSHIFT_ENDPOINT_FRUIT=http://spring-boot-generator.195.201.87.126.nip.io/config
 npm run -d start      
 ```
 

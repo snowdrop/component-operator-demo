@@ -16,14 +16,12 @@
     "dependencyCheck": "szero . --ci",
     "release": "standard-version -a",
     "openshift": "nodeshift --strictSSL=false --nodeVersion=10.x",
-    "postinstall": "license-reporter report -s && license-reporter save -s --xml licenses.xml",
     "start": "node ."
   },
   "main": "./bin/www",
   "standard-version": {
     "scripts": {
-      "postbump": "npm run postinstall && node release.js",
-      "precommit": "git add .openshiftio/application.yaml licenses/"
+      "postbump": "node release.js"
     }
   },
   "xo": {
@@ -43,9 +41,7 @@
     "package.json",
     "app.js",
     "public",
-    "bin",
-    "LICENSE",
-    "licenses"
+    "bin"
   ],
   "bugs": {
     "url": "https://github.com/nodeshift-starters/nodejs-rest-http/issues"
