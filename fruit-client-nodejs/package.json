@@ -69,7 +69,6 @@
     "body-parser": "^1.18.2",
     "debug": "^4.0.1",
     "express": "4.16.0",
-    "license-reporter": "^1.2.0",
     "request": "^2.88.0"
   }
 }

@@ -205,6 +205,12 @@ npm audit fix
 npm install -s --only=production
 ```
 
+- Run locally
+```bash
+ export OPENSHIFT_ENDPOINT_FRUIT=http://spring-boot-generator.195.201.87.126.nip.io/config
+npm run -d start      
+```
+
 - Deploy the node's component
 ```bash
 oc apply -f fruit-client-nodejs/component.yml
@@ -213,6 +219,15 @@ oc apply -f fruit-client-nodejs/component.yml
 - Push the code and start the nodejs application
 ```bash
 ./push_node.sh fruit-client nodejs
+```
+
+- Test it locally or remotely
+```bash
+# locally
+http :8080/api/client
+http :8080/api/client/1 
+
+
 ```
 
 ## Cleanup
