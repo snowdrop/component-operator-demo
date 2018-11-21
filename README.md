@@ -30,7 +30,7 @@ The application to be deployed can be described using a Fluent DSL syntax as :
 
 `(from:componentA).(to:componentB).(to:serviceA)`
 
-where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend`.
+where the `ComponentA` and `ComponentB` correspond respectively to a Spring Boot application `fruit-client` and `fruit-backend-sb`.
 
 The relation `from -> to` indicates that we will `reference` the `ComponentA` 
 with the `ComponentB` using a `Link`.
@@ -110,7 +110,7 @@ oc new-project my-spring-app
 cd fruit-client
 mvn package
 cd ..
-cd fruit-backend
+cd fruit-backend-sb
 mvn package
 cd ..
 ``` 
@@ -120,7 +120,7 @@ cd ..
 - Deploy for each microservice, their Component CRs on the cluster and wait till they will be processed by the controller 
   to create the corresponding kubernetes resources such as DeploymentConfig, Pod, Service, Route, ...
 ```bash
-oc apply -f fruit-backend/component.yml
+oc apply -f fruit-backend-sb/component.yml
 oc apply -f fruit-client-sb/component.yml
 ```  
 
@@ -128,7 +128,7 @@ oc apply -f fruit-client-sb/component.yml
 ```bash
 oc get components
 NAME            RUNTIME       VERSION   SERVICE   TYPE      CONSUMED BY   AGE
-fruit-backend   spring-boot   1.5.16                                      34s
+fruit-backend-sb   spring-boot   1.5.16                                      34s
 fruit-client    spring-boot   1.5.16                                      32s
 ```
 
@@ -152,7 +152,7 @@ postgresql-db   ClusterServiceClass/dh-postgresql-apb   dev       Ready     3m
 ```bash
 oc get components
 NAME             RUNTIME       VERSION   SERVICE         TYPE      CONSUMED BY   AGE
-fruit-backend    spring-boot   1.5.16                                            2m
+fruit-backend-sb    spring-boot   1.5.16                                            2m
 fruit-client     spring-boot   1.5.16                                            2m
 fruit-database                           postgresql-db                           6s
 ```
@@ -207,7 +207,7 @@ npm install -s --only=production
 
 - Run locally
 ```bash
-export OPENSHIFT_ENDPOINT_FRUIT=http://fruit-backend.my-spring-app.195.201.87.126.nip.io/api/fruits
+export OPENSHIFT_ENDPOINT_FRUIT=http://fruit-backend-sb.my-spring-app.195.201.87.126.nip.io/api/fruits
 npm run -d start      
 ```
 
@@ -245,7 +245,7 @@ http http://$route_address/api/client/3
 ### Demo components
 
 ```bash
-oc delete cp/fruit-backend
+oc delete cp/fruit-backend-sb
 oc delete cp/fruit-database
 oc delete cp/fruit-database-config
 
