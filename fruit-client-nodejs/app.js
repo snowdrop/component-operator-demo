@@ -21,14 +21,26 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const request = require('request');
 
 const app = express();
+
+const endpoint = process.env.OPENSHIFT_ENDPOINT_FRUIT;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', express.static(path.join(__dirname, 'public')));
 // Expose the license.html at http[s]://[host]:[port]/licences/licenses.html
 app.use('/licenses', express.static(path.join(__dirname, 'licenses')));
+
+app.use('/api/client', (req, resp) => {
+    const id = req.params ? req.params.id : undefined; // ????
+    console.log("params", req.params)
+    const params = {id: id}
+    var x = request({url:endpoint, qs:params})
+    req.pipe(x)
+    x.pipe(resp)
+});
 
 app.use('/api/greeting', (request, response) => {
   const name = request.query ? request.query.name : undefined;
