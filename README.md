@@ -207,7 +207,7 @@ npm install -s --only=production
 
 - Run locally
 ```bash
-export OPENSHIFT_ENDPOINT_FRUIT=http://fruit-backend-sb.my-spring-app.195.201.87.126.nip.io/api/fruits
+export OPENSHIFT_ENDPOINT_BACKEND=http://fruit-backend-sb.my-spring-app.195.201.87.126.nip.io/api/fruits
 npm run -d start      
 ```
 

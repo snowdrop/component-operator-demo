@@ -25,7 +25,7 @@ const request = require('request');
 
 const app = express();
 
-const endpoint = process.env.OPENSHIFT_ENDPOINT_FRUIT;
+const endpoint = process.env.OPENSHIFT_ENDPOINT_BACKEND;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
