@@ -3,7 +3,7 @@ kind: Component
 metadata:
   name: fruit-backend-sb
 spec:
-  deployment: innerloop
+  deploymentMode: innerloop
   runtime: spring-boot
   version: 1.5.16 #
   exposeService: true

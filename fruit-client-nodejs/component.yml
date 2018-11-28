@@ -3,7 +3,7 @@ kind: Component
 metadata:
   name: fruit-client-nodejs
 spec:
-  deployment: innerloop
+  deploymentMode: innerloop
   runtime: nodejs
   version: v10
   exposeService: true
