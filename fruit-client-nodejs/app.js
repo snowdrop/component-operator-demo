@@ -46,9 +46,4 @@ app.use('/api/client/:id', (req, resp) => {
     x.pipe(resp)
 });
 
-app.use('/api/greeting', (request, response) => {
-  const name = request.query ? request.query.name : undefined;
-  response.send({content: `Hello, ${name || 'World!'}`});
-});
-
 module.exports = app;
