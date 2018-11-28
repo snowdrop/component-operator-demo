@@ -16,9 +16,31 @@
 
 package com.example.demo;
 
+import io.ap4k.component.annotation.CompositeApplication;
+import io.ap4k.kubernetes.annotation.Env;
+import io.ap4k.servicecatalog.annotation.Parameter;
+import io.ap4k.servicecatalog.annotation.ServiceCatalog;
+import io.ap4k.servicecatalog.annotation.ServiceCatalogInstance;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@CompositeApplication(
+        exposeService = true,
+        envVars = @Env(name = "SPRING_PROFILES_ACTIVE", value = "openshift-catalog"))
+@ServiceCatalog(
+   instances = @ServiceCatalogInstance(
+        name = "postgresql-db",
+        serviceClass = "dh-postgresql-apb",
+        servicePlan = "dev",
+        bindingSecret = "postgresql-db",
+        parameters = {
+                @Parameter(key = "postgresql_user", value = "luke"),
+                @Parameter(key = "postgresql_password", value = "secret"),
+                @Parameter(key = "postgresql_database", value = "my_data"),
+                @Parameter(key = "postgresql_version", value = "9.6")
+        }
+   )
+)
 @SpringBootApplication
 public class CrudApplication {
 
