@@ -16,6 +16,8 @@
 package com.example.demo;
 
 import io.ap4k.component.annotation.CompositeApplication;
+import io.ap4k.component.annotation.Link;
+import io.ap4k.kubernetes.annotation.Env;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -23,7 +25,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Entry point to the application.
  */
 @SpringBootApplication
-@CompositeApplication
+@CompositeApplication(
+        name = "fruit-endpoint-sb",
+        links = @Link(
+                  name = "Env var to be injected within the target component -> fruit-backend",
+                  targetcomponentname = "fruit-client-sb",
+                  kind = "Env",
+                  envVars = @Env(
+                          name  = "OPENSHIFT_ENDPOINT_BACKEND",
+                          value = " http://fruit-backend-sb:8080/api/fruits"
+                  )
+))
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

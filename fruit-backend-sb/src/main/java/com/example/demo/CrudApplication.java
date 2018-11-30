@@ -17,6 +17,7 @@
 package com.example.demo;
 
 import io.ap4k.component.annotation.CompositeApplication;
+import io.ap4k.component.annotation.Link;
 import io.ap4k.kubernetes.annotation.Env;
 import io.ap4k.servicecatalog.annotation.Parameter;
 import io.ap4k.servicecatalog.annotation.ServiceCatalog;
@@ -25,8 +26,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @CompositeApplication(
+        name = "fruit-backend-sb",
         exposeService = true,
-        envVars = @Env(name = "SPRING_PROFILES_ACTIVE", value = "openshift-catalog"))
+        envVars = @Env(
+                name = "SPRING_PROFILES_ACTIVE",
+                value = "openshift-catalog"),
+        links = @Link(
+                name = "Secret to be injected as EnvVar using Service's secret",
+                targetcomponentname = "fruit-backend-sb",
+                kind = "Secret",
+                ref = "postgresql-db"))
 @ServiceCatalog(
    instances = @ServiceCatalogInstance(
         name = "postgresql-db",
