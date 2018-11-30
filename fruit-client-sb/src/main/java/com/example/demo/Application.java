@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                   name = "Env var to be injected within the target component -> fruit-backend",
                   targetcomponentname = "fruit-client-sb",
                   kind = "Env",
+                  ref = "",
                   envVars = @Env(
                           name  = "OPENSHIFT_ENDPOINT_BACKEND",
                           value = " http://fruit-backend-sb:8080/api/fruits"
