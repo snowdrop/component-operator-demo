@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @CompositeApplication(
-        name = "fruit-endpoint-sb",
+        name = "fruit-client-sb",
         links = @Link(
                   name = "Env var to be injected within the target component -> fruit-backend",
                   targetcomponentname = "fruit-client-sb",
