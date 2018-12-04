@@ -11,6 +11,7 @@
      * [Create the database's service usign the Catalog](#create-the-databases-service-usign-the-catalog)
      * [Link the components](#link-the-components)
      * [Push the code and start the Spring Boot application](#push-the-code-and-start-the-spring-boot-application)
+     * [Use ap4k and yaml files generated](#use-ap4k-and-yaml-files-generated)
      * [Check if the Component Client is replying](#check-if-the-component-client-is-replying)
   * [Cleanup](#cleanup)
      * [Demo components](#demo-components)
