@@ -183,7 +183,7 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 
 ### Use ap4k and yaml files generated
 
-- Edit the pom.xml file of the `fruit-client-sb` and `fruit-backend-sb` and add the `ap4k` gavs (responsible to scan the annotated class and to generate the yaml resource files)
+- Edit the pom.xml file of the `fruit-client-sb` and `fruit-backend-sb` maven modules and add the `ap4k` gavs (responsible to scan the annotated class and to generate the yaml resource files)
 ```xml
 <!-- To generate CRD -->
 <dependency>
@@ -209,6 +209,51 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 </dependency>
 ```
 
+- Edit the `Application` class to specify the Component's definition
+  **client**
+  ```java
+  @CompositeApplication(
+          name = "fruit-client-sb",
+          exposeService = true,
+          links = @Link(
+                    name = "Env var to be injected within the target component -> fruit-backend",
+                    targetcomponentname = "fruit-client-sb",
+                    kind = "Env",
+                    ref = "",
+                    envVars = @Env(
+                            name  = "OPENSHIFT_ENDPOINT_BACKEND",
+                            value = "http://fruit-backend-sb:8080/api/fruits"
+                    )
+  ))
+  ```
+  **Backend**
+  ```java
+  @CompositeApplication(
+          name = "fruit-backend-sb",
+          exposeService = true,
+          envVars = @Env(
+                  name = "SPRING_PROFILES_ACTIVE",
+                  value = "openshift-catalog"),
+          links = @Link(
+                  name = "Secret to be injected as EnvVar using Service's secret",
+                  targetcomponentname = "fruit-backend-sb",
+                  kind = "Secret",
+                  ref = "postgresql-db"))
+  @ServiceCatalog(
+     instances = @ServiceCatalogInstance(
+          name = "postgresql-db",
+          serviceClass = "dh-postgresql-apb",
+          servicePlan = "dev",
+          bindingSecret = "postgresql-db",
+          parameters = {
+                  @Parameter(key = "postgresql_user", value = "luke"),
+                  @Parameter(key = "postgresql_password", value = "secret"),
+                  @Parameter(key = "postgresql_database", value = "my_data"),
+                  @Parameter(key = "postgresql_version", value = "9.6")
+          }
+     )
+  ) 
+  ```  
 - Compile the modules at the root of the project
 ```bash
 mvn clean install
