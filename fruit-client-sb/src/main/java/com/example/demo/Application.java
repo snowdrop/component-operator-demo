@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @CompositeApplication(
         name = "fruit-client-sb",
+        exposeService = true,
         links = @Link(
                   name = "Env var to be injected within the target component -> fruit-backend",
                   targetcomponentname = "fruit-client-sb",
@@ -34,7 +35,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                   ref = "",
                   envVars = @Env(
                           name  = "OPENSHIFT_ENDPOINT_BACKEND",
-                          value = " http://fruit-backend-sb:8080/api/fruits"
+                          value = "http://fruit-backend-sb:8080/api/fruits"
                   )
 ))
 public class Application {
