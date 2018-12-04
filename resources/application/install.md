@@ -21,15 +21,15 @@ oc get application
 
 - You will get
 ```
- oc get application
-NAME            AGE
-postgresql-db   4s
+oc get application
+NAME            TYPE
+postgresql-db   Service
 
-NAME                AGE
-fruit-endpoint-sb   3s
+NAME                TYPE
+fruit-endpoint-sb   Link
 
-NAME              RUNTIME
-fruit-client-sb
+NAME              TYPE      RUNTIME
+fruit-client-sb   Runtime   spring-boot
 ```
 
 **Remark**: We can display the different types as separate entries but we can't show them as one unified table such as this one
