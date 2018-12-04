@@ -46,10 +46,22 @@
         <dependency>
             <groupId>io.ap4k</groupId>
             <artifactId>component-annotations</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.ap4k</groupId>
             <artifactId>ap4k-spring-boot</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.ap4k</groupId>
+            <artifactId>component-annotations</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.ap4k</groupId>
+            <artifactId>ap4k-core</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
