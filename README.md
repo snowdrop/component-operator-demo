@@ -178,7 +178,52 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 ```bash
 ./push_start.sh fruit-client sb
 ./push_start.sh fruit-backend sb
-```   
+```  
+
+### Use ap4k and yaml files generated
+
+- Edit the pom.xml file of the `fruit-client-sb` and `fruit-backend-sb` and add the `ap4k` gavs (responsible to scan the annotated class and to generate the yaml resource files)
+```xml
+<!-- To generate CRD -->
+<dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>ap4k-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+<dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>component-annotations</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+<!-- Only needed for the backend component -->
+<dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>servicecatalog-annotations</artifactId>
+    <version>1.0-SNAPSHOT</version>    
+</dependency>
+<dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>ap4k-spring-boot</artifactId>
+    <version>1.0-SNAPSHOT</version>    
+</dependency>
+```
+
+- Compile the modules at the root of the project
+```bash
+mvn clean install
+```
+
+- Deploy the generated `component.yaml` resource files
+```bash
+oc apply -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
+oc apply -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
+``` 
+
+- Push the code and launch the java application
+```bash
+./push_start.sh fruit-client sb
+./push_start.sh fruit-backend sb
+```
 
 ### Check if the Component Client is replying
 
