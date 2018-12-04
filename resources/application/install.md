@@ -15,11 +15,9 @@ oc apply -f resources/application/crd-service.yml
 oc apply -f resources/application/runtime.yml
 oc apply -f resources/application/service.yml
 oc apply -f resources/application/link-a.yml
-
-oc get application
 ```
 
-- You will get
+- Fetch the resources associated with the `application's crd`
 ```
 oc get application
 NAME            TYPE
