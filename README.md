@@ -209,7 +209,12 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 </dependency>
 ```
 
-- Edit the `Application` class to specify the Component's definition :
+- Edit the `Application` class to specify the Component's definition, service or relations (= links).
+  The `@CompositeApplication` is used by the `ap4k` lib to generate a `Component CRD` resource, containing
+  the definition of the runtime, the name of the component, if a route is needed.
+  A `@Link` represents additional information or metadata to be injected within the `Comnponent` (aka DeploymentConfig resource)
+  in order to configure the application to access another `component` using its service address, a service deployed from the k8s catalog.
+ 
 
   **client**
   ```java
@@ -227,6 +232,10 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
                     )
   ))
   ```
+  
+  To express the creation of a service on the Cloud platform, we are using the `@ServiceCatalog` annotation where we define the `Service's class`, its plan and parameters.
+  Like for the Client's component, we will also define a `@Link` annotation to inject from the secret created durting the creation of the service, the parameters that the application
+  will use to configure, in this example, the `DataSource`'s object ablr to call the `PostgreSQL` instance.
   **Backend**
   ```java
   @CompositeApplication(
