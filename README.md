@@ -209,7 +209,8 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 </dependency>
 ```
 
-- Edit the `Application` class to specify the Component's definition
+- Edit the `Application` class to specify the Component's definition :
+
   **client**
   ```java
   @CompositeApplication(
