@@ -32,4 +32,12 @@ NAME              RUNTIME
 fruit-client-sb
 ```
 
+**Remark**: We can display the different types as separate entries but we can't show them as one unified table such as this one
+
+```
+NAME            RUNTIME       AGE
+postgresql-db                 4s
+fruit-endpoint-sb             3s
+fruit-client-sb   spring-boot
+```
 
