@@ -14,3 +14,7 @@ spec:
     categories:
       - application
   scope: Namespaced
+  additionalPrinterColumns:
+    - name: Type
+      type: string
+      JSONPath: .kind
