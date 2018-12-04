@@ -1,4 +1,4 @@
-# Spring Boot Demo
+# Spring Boot Demo using Component's CRD
 
   * [Introduction](#introduction)
   * [Setup](#setup)
