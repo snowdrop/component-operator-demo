@@ -294,10 +294,10 @@ curl http://$route_address/api/client
 or 
 
 using httpie client
-http http://$route_address/api/client
-http http://$route_address/api/client/1
-http http://$route_address/api/client/2
-http http://$route_address/api/client/3
+http -s solarized http://$route_address/api/client
+http -s solarized http://$route_address/api/client/1
+http -s solarized http://$route_address/api/client/2
+http -s solarized http://$route_address/api/client/3
 ``` 
 
 ### Nodejs deployment
