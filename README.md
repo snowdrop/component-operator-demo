@@ -289,7 +289,7 @@ oc apply -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
 
 - Call the HTTP Endpoint exposed by the `Spring Boot Fruit Client` in order to fetch data from the database
 ```bash
-route_address=$(oc get route/fruit-client-sb -o jsonpath='{.spec.host}' )
+route_address=$(oc get route/fruit-client-sb -o jsonpath='{.spec.host}')
 curl http://$route_address/api/client
 or 
 
