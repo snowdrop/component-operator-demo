@@ -3,10 +3,10 @@ kind: Component
 metadata:
   name: fruit-endpoint-sb
 spec:
-  link:
-    name: Env Var to be injected
-    targetcomponentname: fruit-client-sb
-    kind: Env
-    envs:
-    - name: OPENSHIFT_ENDPOINT_BACKEND
-      value: http://fruit-backend-sb:8080/api/fruits
+  links:
+    - name: Env Var to be injected
+      targetComponentName: fruit-client-sb
+      kind: Env
+      envs:
+      - name: OPENSHIFT_ENDPOINT_BACKEND
+        value: http://fruit-backend-sb:8080/api/fruits
