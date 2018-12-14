@@ -38,8 +38,8 @@ with the `ComponentB` using a `Link`.
 
 The `link`'s purpose is to inject as `Env var(s)` the information required to by example configure the `HTTP client` of the `ComponentA` to access the 
 `ComponentB` which exposes the logic of the backend's system as CRUD REST operations.
-To let the `ComponentB` to access the database, we will also setup a link in oder to pass from the `Secret` of the service instance created from a K8s catalog
-the parameters which are needed to configure the Spring Boot Datasource's bean.
+
+To let the `ComponentB` to access the database, we will also setup a `link` in order to pass using the `Secret` of the service instance created the parameters which are needed to configure a Spring Boot Datasource's bean.
 
 The deployment or installation of the application in a namespace will consist in to create the resources on the platform using some `Component` yaml resource files defined according to the 
 [Component API spec](https://github.com/snowdrop/component-operator/blob/master/pkg/apis/component/v1alpha1/component_types.go#L11).
