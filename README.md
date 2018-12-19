@@ -366,4 +366,15 @@ oc delete -f resources/cluster-rbac.yaml
 oc delete -f resources/crd.yaml 
 oc delete -f resources/operator.yaml -n component-operator
 ```
+
+### Start locally Postgresql
+
+```bash
+brew install postgresql@9.6
+echo 'export PATH="/usr/local/opt/postgresql@9.6/bin:$PATH"' >> ~/.zshrc
+pg_ctl -D /usr/local/var/postgresql@9.6 start
+createuser -s postgres
+psql -U postgres -h localhost
+createdb -h localhost -p 5432 -U postgres springbootdb
+```
   
