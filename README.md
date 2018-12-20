@@ -334,7 +334,7 @@ http :8080/api/client
 http :8080/api/client/1 
 
 #Remotely
-route_address=$(oc get route/fruit-client-nodejs -o jsonpath='{.spec.host}' )
+route_address=$(oc get route/fruit-client-nodejs -o jsonpath='{.spec.host}')
 curl http://$route_address/api/client
 or 
 
