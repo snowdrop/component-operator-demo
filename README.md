@@ -177,8 +177,8 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 - As we have finished to compose our application `from Spring Boot Http Client` -> to `Spring Boot REST Backend` -> to `PostgreSQL` database, we will 
   now copy the uber jar files, and next start the `client`, `backend` Spring Boot applications. Execute the following commands : 
 ```bash
-./push_start.sh fruit-client sb
-./push_start.sh fruit-backend sb
+./scripts/push_start.sh fruit-client sb
+./scripts/push_start.sh fruit-backend sb
 ```  
 
 ### Use ap4k and yaml files generated
@@ -281,8 +281,8 @@ oc apply -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
 
 - Push the code and launch the java application
 ```bash
-./push_start.sh fruit-client sb
-./push_start.sh fruit-backend sb
+./scripts/push_start.sh fruit-client sb
+./scripts/push_start.sh fruit-backend sb
 ```
 
 ### Check if the Component Client is replying
@@ -299,6 +299,31 @@ http -s solarized http://$route_address/api/client/1
 http -s solarized http://$route_address/api/client/2
 http -s solarized http://$route_address/api/client/3
 ``` 
+
+### Switch fromm inner to outer loop
+
+- Decorate the Component with the following values in order to specify the git info needed to perform a Build, like the name of the component to be selected to switch from
+  the dev loop to the publish loop
+
+  ```bash
+   annotations:
+     app.openshift.io/git-uri: https://github.com/snowdrop/component-operator-demo.git
+     app.openshift.io/git-ref: master
+     app.openshift.io/git-dir: fruit-backend-sb
+     app.openshift.io/artifact-copy-args: "*.jar"
+     app.openshift.io/runtime-image: "fruit-backend-sb"
+     app.openshift.io/component-name: "fruit-backend-sb"
+     app.openshift.io/java-app-jar: "fruit-backend-sb-0.0.1-SNAPSHOT.jar"
+  ``` 
+  
+  **Remark** : When the maven project does not contain multi modules, then replace the name of the folder / module with `.` using the annotation `app.openshift.io/git-dir`
+  
+- Patch the component when it has been deployed to switch fromm `inner` to `outer`
+  
+  ```bash
+  oc patch cp fruit-backend-sb -p '{"spec":{"deploymentMode":"outerloop"}}' --type=merge
+  ```   
+
 
 ### Nodejs deployment
 
@@ -324,7 +349,7 @@ oc apply -f fruit-client-nodejs/env-backend-endpoint.yml
 
 - Push the code and start the nodejs application
 ```bash
-./push_start.sh fruit-client nodejs
+./scripts/push_start.sh fruit-client nodejs
 ```
 
 - Test it locally or remotely
