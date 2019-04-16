@@ -1,0 +1,21 @@
+---
+apiVersion: "v1"
+kind: "List"
+items:
+- apiVersion: "component.k8s.io/v1alpha1"
+  kind: "Component"
+  metadata:
+    name: "fruit-client-sb"
+  spec:
+    runtime: spring-boot
+    version: 1.5.19.RELEASE
+    deploymentMode: "innerloop"
+    exposeService: true
+    links:
+    - kind: "Env"
+      name: "Env var to be injected within the target component -> fruit-backend"
+      targetComponentName: "fruit-client-sb"
+      envs:
+      - name: "OPENSHIFT_ENDPOINT_BACKEND"
+        value: "http://fruit-backend-sb:8080/api/fruits"
+      ref: ""

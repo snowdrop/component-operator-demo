@@ -7,14 +7,17 @@ items:
   metadata:
     name: "fruit-backend-sb"
     annotations:
-      app.openshift.io/git-uri: https://github.com/snowdrop/component-operator-demo.git
-      app.openshift.io/git-ref: master
+      app.openshift.io/artifact-copy-args: '*.jar'
+      app.openshift.io/component-name: fruit-backend-sb
       app.openshift.io/git-dir: fruit-backend-sb
-      app.openshift.io/artifact-copy-args: "*.jar"
-  spec:  
+      app.openshift.io/git-ref: master
+      app.openshift.io/git-uri: 'https://github.com/snowdrop/component-operator-demo.git'
+      app.openshift.io/java-app-jar: fruit-backend-sb-0.0.1-SNAPSHOT.jar
+      app.openshift.io/runtime-image: fruit-backend-sb
+  spec:
+    runtime: spring-boot
+    version: 1.5.15.RELEASE
     deploymentMode: "innerloop"
-    runtime: "spring-boot"
-    version: 1.5.16
     exposeService: true
     envs:
     - name: "SPRING_PROFILES_ACTIVE"
