@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+set -x
+
 component=$1
 runtime=$2
 project=$component-$runtime
-namespace=my-spring-app
+namespace=${3:-my-spring-app}
 
 pod_name=$(kubectl get pod -lapp=${project} -o name -n ${namespace})
 pod_id=${pod_name#"pod/"}
