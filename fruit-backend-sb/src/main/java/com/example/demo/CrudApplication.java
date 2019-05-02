@@ -29,11 +29,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @KubernetesApplication(
         annotations = {
-                @Annotation(key = "app.openshift.io/artifact-copy-args", value = "'*.jar'"),
+                @Annotation(key = "app.openshift.io/artifact-copy-args", value = "*.jar"),
                 @Annotation(key = "app.openshift.io/component-name", value = "fruit-backend-sb"),
                 @Annotation(key = "app.openshift.io/git-dir", value = "fruit-backend-sb"),
                 @Annotation(key = "app.openshift.io/git-ref", value = "master"),
-                @Annotation(key = "app.openshift.io/git-uri", value = "'https://github.com/snowdrop/component-operator-demo.git'"),
+                @Annotation(key = "app.openshift.io/git-uri", value = "https://github.com/snowdrop/component-operator-demo.git"),
                 @Annotation(key = "app.openshift.io/java-app-jar", value = "fruit-backend-sb-0.0.1-SNAPSHOT.jar"),
                 @Annotation(key = "app.openshift.io/runtime-image", value = "fruit-backend-sb")
         })

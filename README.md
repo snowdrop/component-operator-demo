@@ -370,6 +370,58 @@ http http://$route_address/api/client/2
 http http://$route_address/api/client/3
 ```
 
+### Scaffold a project
+
+
+```bash
+git clone git@github.com:snowdrop/scaffold-command.git && cd scaffold-command
+go build -o scaffold cmd/scaffold.go
+export PATH=$PATH:/Users/dabou/Code/snowdrop/scaffold-command
+
+ scaffold   
+? Create from template Yes
+? Available templates rest
+? Group Id me.snowdrop
+? Artifact Id myproject
+? Version 1.0.0-SNAPSHOT
+? Package name me.snowdrop.myproject
+? Spring Boot version 2.1.2.RELEASE
+? Use supported version No
+? Where should we create your new project ./fruit-demo
+
+cd demo
+
+add to the pom.xml file
+
+<properties>
+  ...
+  <ap4k.version>0.3.2</ap4k.version>
+</properties>
+  
+and 
+
+<dependencies>
+  <dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>component-annotations</artifactId>
+    <version>${ap4k.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>kubernetes-annotations</artifactId>
+    <version>${ap4k.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>io.ap4k</groupId>
+    <artifactId>ap4k-spring-boot</artifactId>
+    <version>${ap4k.version}</version>
+  </dependency>
+  <!-- spring Boot -->
+  
+
+
+```
+
 ## Cleanup
 
 ### Demo components
