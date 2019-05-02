@@ -9,7 +9,8 @@
     <description>Spring Boot - Project</description>
 
     <properties>
-        <ap4k.version>0.3.3</ap4k.version>
+        <ap4k.version>0.3.4</ap4k.version>
+        <!--<ap4k.version>0.3-SNAPSHOT</ap4k.version>-->
     </properties>
 
     <dependencyManagement>
@@ -18,6 +19,11 @@
             <dependency>
                 <groupId>io.ap4k</groupId>
                 <artifactId>ap4k-core</artifactId>
+                <version>${ap4k.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ap4k</groupId>
+                <artifactId>kubernetes-annotations</artifactId>
                 <version>${ap4k.version}</version>
             </dependency>
             <dependency>
