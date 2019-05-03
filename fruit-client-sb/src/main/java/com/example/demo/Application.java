@@ -17,7 +17,9 @@ package com.example.demo;
 
 import io.ap4k.component.annotation.CompositeApplication;
 import io.ap4k.component.annotation.Link;
+import io.ap4k.kubernetes.annotation.Annotation;
 import io.ap4k.kubernetes.annotation.Env;
+import io.ap4k.kubernetes.annotation.KubernetesApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -25,6 +27,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Entry point to the application.
  */
 @SpringBootApplication
+@KubernetesApplication(
+        annotations = {
+                @Annotation(key = "app.openshift.io/artifact-copy-args", value = "*.jar"),
+                @Annotation(key = "app.openshift.io/component-name", value = "fruit-client-sb"),
+                @Annotation(key = "app.openshift.io/git-dir", value = "fruit-client-sb"),
+                @Annotation(key = "app.openshift.io/git-ref", value = "master"),
+                @Annotation(key = "app.openshift.io/git-uri", value = "https://github.com/snowdrop/component-operator-demo.git"),
+                @Annotation(key = "app.openshift.io/java-app-jar", value = "fruit-client-sb-0.0.1-SNAPSHOT.jar"),
+                @Annotation(key = "app.openshift.io/runtime-image", value = "fruit-client-sb")
+        })
 @CompositeApplication(
         name = "fruit-client-sb",
         exposeService = true,
