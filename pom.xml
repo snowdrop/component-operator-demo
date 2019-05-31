@@ -41,11 +41,6 @@
                 <artifactId>ap4k-spring-boot</artifactId>
                 <version>${ap4k.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.ap4k</groupId>
-                <artifactId>application-annotations</artifactId>
-                <version>${ap4k.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
