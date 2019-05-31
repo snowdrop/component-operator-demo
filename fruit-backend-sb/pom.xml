@@ -7,8 +7,7 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <groupId>com.example</groupId>
+    
     <artifactId>fruit-backend-sb</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Spring Boot - CRUD Demo</name>
@@ -18,8 +17,6 @@
         <awaitility.version>3.1.0</awaitility.version>
         <postgresql.version>9.4.1212</postgresql.version>
         <rest-assured.version>3.1.0</rest-assured.version>
-        <snowdrop-bom.version>1.5.15.Final</snowdrop-bom.version>
-        <spring-boot.version>1.5.15.RELEASE</spring-boot.version>
         <fabric8-maven-plugin.version>3.5.41</fabric8-maven-plugin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -27,13 +24,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>me.snowdrop</groupId>
-                <artifactId>spring-boot-bom</artifactId>
-                <version>${snowdrop-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>

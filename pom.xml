@@ -9,12 +9,21 @@
     <description>Spring Boot - Project</description>
 
     <properties>
+        <snowdrop-bom.version>2.1.2.Final</snowdrop-bom.version>
+        <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+      
         <ap4k.version>0.3.4</ap4k.version>
-        <!--<ap4k.version>0.3-SNAPSHOT</ap4k.version>-->
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>me.snowdrop</groupId>
+                <artifactId>spring-boot-bom</artifactId>
+                <version>${snowdrop-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- To generate CRD -->
             <dependency>
                 <groupId>io.ap4k</groupId>

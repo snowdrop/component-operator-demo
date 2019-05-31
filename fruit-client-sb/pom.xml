@@ -7,31 +7,16 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>com.example</groupId>
     <artifactId>fruit-client-sb</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Spring Boot - HTTP REST Client</name>
     <description>Spring Boot - HTTP REST Client</description>
 
     <properties>
-        <snowdrop-bom.version>1.5.15.Final</snowdrop-bom.version>
-        <spring-boot.version>1.5.15.RELEASE</spring-boot.version>
         <fabric8-maven-plugin.version>3.5.41</fabric8-maven-plugin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>me.snowdrop</groupId>
-                <artifactId>spring-boot-bom</artifactId>
-                <version>${snowdrop-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
