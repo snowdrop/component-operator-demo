@@ -43,7 +43,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     exposeService = true
 )
 @Link(
-    name = "Env var to be injected within the target component -> fruit-backend",
+    name = "link-to-fruit-backend",
     targetcomponentname = "fruit-client-sb",
     kind = Kind.Env,
     envVars = @Env(
