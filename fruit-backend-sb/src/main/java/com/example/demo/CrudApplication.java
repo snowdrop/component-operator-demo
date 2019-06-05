@@ -60,15 +60,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     )
 )
 @Link(
-    name = "Secret to be injected as EnvVar using Service's secret",
+    name = "link-to-database",
     targetcomponentname = "fruit-backend-sb",
     kind = Kind.Secret,
     ref = "postgresql-db")
 @SpringBootApplication
 public class CrudApplication {
-    
+
     public static void main(String[] args) {
         SpringApplication.run(CrudApplication.class, args);
     }
-    
+
 }
