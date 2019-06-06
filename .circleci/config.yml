@@ -22,11 +22,14 @@ jobs:
           chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
           mkdir -p "$HOME/.kube"
           mkdir -p "$HOME/.minikube"
-          touch ${KUBECONFIG}
     - run:
         name: Start minikube
         command: |
-          sudo minikube start --vm-driver=none --kubernetes-version=${KUBE_VERSION}
+          sudo minikube addons enable ingress
+          sudo minikube config set cpus 4
+          sudo minikube config set vm-driver none
+          sudo minikube config set kubernetes-version ${KUBE_VERSION}
+          sudo minikube start
 
 workflows:
   version: 2.1
