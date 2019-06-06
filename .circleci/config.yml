@@ -21,13 +21,6 @@ jobs:
     #      chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
     #      mkdir -p "$HOME/.kube"
     #      mkdir -p "$HOME/.minikube"
-    - run:
-        name: Install kubectl, Helm
-        command: |
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
-          chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
-
-          curl -L https://git.io/get_helm.sh | bash
 
     # Failing as we get
     # minikube is not running, so the service cannot be accessed
@@ -56,7 +49,8 @@ jobs:
     #      EOF
     #      sudo apt-get install -y kubelet kubeadm kubectl
     #      sudo apt-mark hold kubelet kubeadm kubectl
-    # Failling
+
+    # Failing
     # Failed to execute operation: No such file or directory
     # Exited with code 1
     #- run:
@@ -65,18 +59,26 @@ jobs:
     #      CNI_VERSION="v0.6.0"
     #      sudo mkdir -p /opt/cni/bin
     #      curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-amd64-${CNI_VERSION}.tgz" | sudo tar -C /opt/cni/bin -xz
-#
+    #
     #      CRICTL_VERSION="v1.11.1"
     #      sudo mkdir -p /opt/bin
     #      curl -L "https://github.com/kubernetes-incubator/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | sudo tar -C /opt/bin -xz
-#
+    #
     #      RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
-#
+    #
     #      cd /opt/bin
     #      sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
     #      sudo chmod +x {kubeadm,kubelet,kubectl}
-#
+    #
     #      sudo systemctl enable --now kubelet
+    - run:
+        name: Install kubectl, Helm
+        command: |
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
+          chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+          curl -L https://git.io/get_helm.sh | bash
+
     - run:
         name: Use microk8s
         command: |
@@ -93,6 +95,9 @@ jobs:
           done
           echo "Kubernetes cluster launched"
 
+          # Allow intra-pod communication
+          sudo iptables -P FORWARD ACCEPT
+
           echo n |/snap/bin/microk8s.enable dns ingress registry storage
 
     - run:
@@ -102,6 +107,7 @@ jobs:
           until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
 
           kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+
     - run:
         name: Install ServiceCatalog
         command: |
