@@ -9,6 +9,7 @@ executors:
       KUBE_VERSION: v1.14.0
       MINIKUBE_HOME: $HOME
       KUBECONFIG: $HOME/.kube/config
+      OPERATOR_GIT_REF: master
 
 jobs:
   k8s-setup-start:
@@ -110,7 +111,7 @@ jobs:
           kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
     - run:
-        name: Install ServiceCatalog
+        name: Install ServiceCatalog using helm
         command: |
           # Adds the chart repository for the service catalog
           helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
@@ -129,16 +130,16 @@ jobs:
           until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 10; done
 
     - run:
-        name: Install Component Operator
+        name: Install Component Operator from master branch
         command: |
           kubectl create namespace component-operator
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml -n component-operator
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/cluster-rbac.yaml
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/user-rbac.yaml
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/capability_v1alpha2.yaml
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/component_v1alpha2.yaml
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/link_v1alpha2.yaml
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/operator.yaml -n component-operator
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/sa.yaml -n component-operator
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/cluster-rbac.yaml
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/user-rbac.yaml
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/capability_v1alpha2.yaml
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/component_v1alpha2.yaml
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/link_v1alpha2.yaml
+          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/operator.yaml -n component-operator
 
 workflows:
   version: 2.1
