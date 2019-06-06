@@ -49,7 +49,7 @@
   "homepage": "https://github.com/nodeshift-starters/nodejs-rest-http",
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "js-yaml": "^3.10.0",
+    "js-yaml": ">=3.13.1",
     "nodeshift": "~2.0.0",
     "nsp": "~3.2.1",
     "nyc": "~12.0.1",
