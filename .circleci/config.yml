@@ -157,6 +157,12 @@ jobs:
         name: Compile the component-operator-demo project using maven
         command: |
           mvn clean package -DskipTests=true
+    - run:
+        name: Deploy the yaml resources populated by ap4k within the demo namespace
+        command: |
+          kubectl create new demo
+          kc apply -n demo -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
+          kc apply -n demo -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
 
 workflows:
   version: 2.1
