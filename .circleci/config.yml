@@ -7,7 +7,7 @@ executors:
     environment:
       KUBE_VERSION: v1.14.0
       MINIKUBE_HOME: $HOME
-      KUBECONFIG: $HOME/kube/config
+      KUBECONFIG: $HOME/.kube/config
 
 jobs:
   k8s-setup:
