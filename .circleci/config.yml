@@ -104,6 +104,7 @@ jobs:
         name: Initialize helm
         command: |
           helm init
+
           until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
 
           kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
@@ -120,7 +121,12 @@ jobs:
           # Wait until the catalog is ready before moving on
           until kubectl get pods -n catalog -l app=catalog-catalog-apiserver | grep 2/2; do sleep 1; done
           until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | grep 1/1; do sleep 1; done
+     - run:
+         name: Install the OpenShift Ansible Broker
+         command: |
+           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
 
+           until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 1; done
 
 workflows:
   version: 2.1
