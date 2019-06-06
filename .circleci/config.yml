@@ -13,26 +13,38 @@ jobs:
   k8s-setup-start:
     executor: k8s-executor
     steps:
-    - run:
-        name: Install kubectl and minikube
-        command: |
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
-          chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+    # - run:
+    #     name: Install kubectl and minikube
+    #     command: |
+    #       curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
+    #       chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+    #
+    #       curl -L https://git.io/get_helm.sh | bash
+    #
+    #       curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    #       chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
+    #       mkdir -p "$HOME/.kube"
+    #       mkdir -p "$HOME/.minikube"
 
-          curl -L https://git.io/get_helm.sh | bash
-
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
-          mkdir -p "$HOME/.kube"
-          mkdir -p "$HOME/.minikube"
+    #- run:
+    #    name: Start minikube
+    #    command: |
+    #      minikube addons enable ingress
+    #      minikube config set cpus 4
+    #      minikube config set vm-driver none
+    #      minikube config set kubernetes-version ${KUBE_VERSION}
+    #      minikube start -v 6
     - run:
-        name: Start minikube
+        name: Install kubelet, kubectl, kubeadmin
         command: |
-          minikube addons enable ingress
-          minikube config set cpus 4
-          minikube config set vm-driver none
-          minikube config set kubernetes-version ${KUBE_VERSION}
-          minikube start -v 6
+          apt-get update && apt-get install -y apt-transport-https curl
+          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+          cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+          deb https://apt.kubernetes.io/ kubernetes-xenial main
+          EOF
+          apt-get update
+          apt-get install -y kubelet kubeadm kubectl
+          apt-mark hold kubelet kubeadm kubectl
     - run:
         name: Initialize helm, install ServiceCatalog
         command: |
