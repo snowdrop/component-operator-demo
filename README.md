@@ -22,7 +22,6 @@
      * [Demo components](#demo-components)
      * [Operator and CRD resources](#operator-and-crd-resources)
 
-
 ## Introduction
 
 The purpose of this demo is to showcase how you can use `Component CRD` and a Kubernetes `operator` deployed on OpenShift to help you to install your Microservices Spring Boot 
@@ -77,7 +76,7 @@ minishift openshift component add automation-service-broker
 
 - Login to MiniShift using `admin`'s user
 ```bash
-oc login https://$(minishift ip):8443 -u admin -p admin
+oc login "https://$(minishift ip):8443" -u admin -p admin
 ```
 - Deploy the resources within the namespace `component-operator` 
 
@@ -308,10 +307,30 @@ http -s solarized http://$route_address/api/client/2
 http -s solarized http://$route_address/api/client/3
 ``` 
 
-
 ### Using K8s
 
-If the operator has been deployed on a k8s cluster, then use the following bash script to push the binary jar files
+Before to install the operator, create a kubernetes namespace and then deploy the resources
+
+```bash
+kubectl new namespace component-operator
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/cluster-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/user-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/capability_v1alpha2.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/component_v1alpha2.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/link_v1alpha2.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/operator.yaml
+```
+
+Next, install the 2 components `frontend` and `backend` within the namespace demo
+
+```bash
+kubectl new namespace demo
+kubectl apply -n demo -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
+kubectl apply -n demo -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
+```
+
+When the Dev's pods are ready, then push the code using the following bash script within the target namespace
 
 ```bash
 ./scripts/k8s_push_start.sh fruit-backend sb demo
@@ -320,12 +339,13 @@ If the operator has been deployed on a k8s cluster, then use the following bash 
 
 **REMARK**: the namespace where the application will be deployed must be passed as 3rd paramteer to the bash script
 
-As an ingress route will be created instead of an openshift route, then we must adapt the curl commands to access the service's address
+As an Ingress route will be created instead of an OpenShift route, then we must adapt the curl command to access the service's address
+and get the fruits
 
 ```bash
 # export FRONTEND_ROUTE_URL=<service_name>.<hostname_or_ip>.<domain_name>
 export FRONTEND_ROUTE_URL=fruit-client-sb.10.0.76.186.nip.io
-curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client 
+curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client
 ```
 
 ### Switch from Dev to Build mode
