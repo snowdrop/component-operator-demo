@@ -10,7 +10,7 @@ executors:
       KUBECONFIG: $HOME/.kube/config
 
 jobs:
-  k8s-setup:
+  k8s-setup-start:
     executor: k8s-executor
     steps:
     - run:
@@ -21,9 +21,6 @@ jobs:
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
           mkdir -p $HOME/.kube $HOME/.minikube && touch $KUBECONFIG
-  k8s-start:
-    machine: true
-    steps:
     - run:
         name: Start minikube
         command: |
@@ -33,5 +30,4 @@ workflows:
   version: 2.1
   test-component-operator-demo:
     jobs:
-      - k8s-setup
-      - k8s-start
+      - k8s-setup-start
