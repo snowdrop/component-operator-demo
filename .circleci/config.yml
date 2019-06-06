@@ -71,12 +71,12 @@ jobs:
           sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
           sudo chmod +x {kubeadm,kubelet,kubectl}
 
-          systemctl enable --now kubelet
+          sudo systemctl enable --now kubelet
     - run:
         name: Use microk8s
         command: |
           sudo snap install microk8s --classic
-          microk8s.enable registry ingress
+          microk8s.enable dns ingress storage
           sudo microk8s.start
 
     - run:
