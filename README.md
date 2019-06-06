@@ -136,7 +136,7 @@ until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | gr
 
 We can now install the OpenShift Ansible Broker
 ```bash
-cat <<EOF | kubectl create -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -147,7 +147,7 @@ roleRef:
   name: cluster-admin
 subjects:
 - kind: ServiceAccount
-  name: automation-broker-apb
+  name: automation-broker
   namespace: automation-broker
 EOF
 curl https://raw.githubusercontent.com/openshift/ansible-service-broker/2110c23c28fa391122a17f4dcc7022819dc1aa40/apb/install.yaml | kubectl create -f -
@@ -295,7 +295,7 @@ Before to install the operator, create a kubernetes namespace and then deploy th
 
 ```bash
 kubectl create namespace component-operator
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml -n component-operator
 kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/cluster-rbac.yaml
 kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/user-rbac.yaml
 kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/capability_v1alpha2.yaml
