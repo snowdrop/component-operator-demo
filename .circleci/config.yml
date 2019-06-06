@@ -34,4 +34,4 @@ workflows:
   test-component-operator-demo:
     jobs:
       - k8s-setup
-      - k8s-test
+      - k8s-start
