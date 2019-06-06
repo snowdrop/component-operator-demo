@@ -79,8 +79,19 @@ jobs:
         name: Use microk8s
         command: |
           sudo snap install microk8s --classic
-          microk8s.enable dns ingress storage
-          sudo microk8s.start
+
+          # wait until a k8s node is ready
+          sleep 10
+          n=0
+          until [ $n -ge 10 ]
+          do
+            (/snap/bin/microk8s.kubectl get no | grep -z "Ready") && break
+            n=$[$n+1]
+            sleep 20
+          done
+          echo "Kubernetes cluster launched"
+
+          echo n |/snap/bin/microk8s.enable dns ingress registry storage
 
     - run:
         name: Initialize helm, install ServiceCatalog
