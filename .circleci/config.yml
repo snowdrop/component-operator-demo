@@ -164,6 +164,18 @@ jobs:
           kubectl apply -n demo -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
           kubectl apply -n demo -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
 
+    - run:
+        name: Wait till the fruit-backend, fruit-client have been started
+        command: |
+          until kubectl get pods -l app=fruit-backend-sb -n demo | grep 1/1; do sleep 10; done
+          until kubectl get pods -l app=fruit-client-sb -n demo | grep 1/1; do sleep 10; done
+
+    - run:
+        name: Push now the uber jar file of the frontend, backend
+        command: |
+          ./scripts/k8s_push_start.sh fruit-backend sb demo
+          ./scripts/k8s_push_start.sh fruit-client sb demo
+
 workflows:
   version: 2.1
   test-component-operator-demo:
