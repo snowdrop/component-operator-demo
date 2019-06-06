@@ -292,17 +292,7 @@ http -s solarized http://$route_address/api/client/3
 ### Using K8s
 
 Before to install the operator, create a kubernetes namespace and then deploy the resources
-
-```bash
-kubectl create namespace component-operator
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml -n component-operator
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/cluster-rbac.yaml
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/user-rbac.yaml
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/capability_v1alpha2.yaml
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/component_v1alpha2.yaml
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/link_v1alpha2.yaml
-kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/operator.yaml -n component-operator
-```
+as defined within the section of the README - Minikube
 
 Next, install the 2 components `frontend` and `backend` within the namespace demo
 
