@@ -96,9 +96,25 @@ jobs:
           echo n |/snap/bin/microk8s.enable dns ingress registry storage
 
     - run:
-        name: Initialize helm, install ServiceCatalog
+        name: Initialize helm
         command: |
           helm init
+          until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
+
+          kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+    - run:
+        name: Install ServiceCatalog
+        command: |
+          # Adds the chart repository for the service catalog
+          helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
+
+          # Installs the service catalog
+          helm install svc-cat/catalog --name catalog --namespace catalog
+
+          # Wait until the catalog is ready before moving on
+          until kubectl get pods -n catalog -l app=catalog-catalog-apiserver | grep 2/2; do sleep 1; done
+          until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | grep 1/1; do sleep 1; done
+
 
 workflows:
   version: 2.1
