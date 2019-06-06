@@ -13,6 +13,11 @@
      * [Push the code and start the Spring Boot application](#push-the-code-and-start-the-spring-boot-application)
      * [Use ap4k and yaml files generated](#use-ap4k-and-yaml-files-generated)
      * [Check if the Component Client is replying](#check-if-the-component-client-is-replying)
+     * [Using K8s](#using-k8s)
+     * [Switch from Dev to Build mode](#switch-from-dev-to-build-mode)
+     * [Nodejs deployment](#nodejs-deployment)
+     * [Scaffold a project](#scaffold-a-project)
+
   * [Cleanup](#cleanup)
      * [Demo components](#demo-components)
      * [Operator and CRD resources](#operator-and-crd-resources)
@@ -78,11 +83,13 @@ oc login https://$(minishift ip):8443 -u admin -p admin
 
 ```bash
 oc new-project component-operator
-oc create -f resources/sa.yaml
-oc create -f resources/cluster-rbac.yaml
-oc create -f resources/user-rbac.yaml
-oc create -f resources/crd.yaml
-oc create -f resources/operator.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/sa.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/cluster-rbac.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/user-rbac.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/capability_v1alpha2.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/component_v1alpha2.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/crds/link_v1alpha2.yaml
+oc apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/operator.yaml
 ```
 
 ## Demo's time
@@ -179,7 +186,8 @@ oc apply -f fruit-client-sb/env-backend-endpoint.yml
 ```bash
 ./scripts/push_start.sh fruit-client sb
 ./scripts/push_start.sh fruit-backend sb
-```  
+```
+
 
 ### Use ap4k and yaml files generated
 
@@ -300,7 +308,27 @@ http -s solarized http://$route_address/api/client/2
 http -s solarized http://$route_address/api/client/3
 ``` 
 
-### Switch fromm inner to outer loop
+
+### Using K8s
+
+If the operator has been deployed on a k8s cluster, then use the following bash script to push the binary jar files
+
+```bash
+./scripts/k8s_push_start.sh fruit-backend sb demo
+./scripts/k8s_push_start.sh fruit-client sb demo
+```
+
+**REMARK**: the namespace where the application will be deployed must be passed as 3rd paramteer to the bash script
+
+As an ingress route will be created instead of an openshift route, then we must adapt the curl commands to access the service's address
+
+```bash
+# export FRONTEND_ROUTE_URL=<service_name>.<hostname_or_ip>.<domain_name>
+export FRONTEND_ROUTE_URL=fruit-client-sb.10.0.76.186.nip.io
+curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client 
+```
+
+### Switch from Dev to Build mode
 
 - Decorate the Component with the following values in order to specify the git info needed to perform a Build, like the name of the component to be selected to switch from
   the dev loop to the publish loop
@@ -318,12 +346,11 @@ http -s solarized http://$route_address/api/client/3
   
   **Remark** : When the maven project does not contain multi modules, then replace the name of the folder / module with `.` using the annotation `app.openshift.io/git-dir`
   
-- Patch the component when it has been deployed to switch fromm `inner` to `outer`
+- Patch the component when it has been deployed to switch from `dev` to `build`
   
   ```bash
-  oc patch cp fruit-backend-sb -p '{"spec":{"deploymentMode":"outerloop"}}' --type=merge
+  oc patch cp fruit-backend-sb -p '{"spec":{"deploymentMode":"build"}}' --type=merge
   ```   
-
 
 ### Nodejs deployment
 
@@ -426,6 +453,8 @@ and
 
 ### Demo components
 
+TODO: To be updated as this is not longer correct
+
 ```bash
 oc delete cp/fruit-backend-sb
 oc delete cp/fruit-database
@@ -437,21 +466,12 @@ oc delete cp/fruit-endpoint
 
 ### Operator and CRD resources
 
+TODO: To be updated as this is not longer correct
+
 ```bash
 oc delete -f resources/sa.yaml -n component-operator
 oc delete -f resources/cluster-rbac.yaml
 oc delete -f resources/crd.yaml 
 oc delete -f resources/operator.yaml -n component-operator
-```
-
-### Start locally Postgresql
-
-```bash
-brew install postgresql@9.6
-echo 'export PATH="/usr/local/opt/postgresql@9.6/bin:$PATH"' >> ~/.zshrc
-pg_ctl -D /usr/local/var/postgresql@9.6 start
-createuser -s postgres
-psql -U postgres -h localhost
-createdb -h localhost -p 5432 -U postgres springbootdb
 ```
   
