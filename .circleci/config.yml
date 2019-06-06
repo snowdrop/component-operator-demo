@@ -18,6 +18,9 @@ jobs:
         command: |
           curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
           chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+          curl -L https://git.io/get_helm.sh | bash
+
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
           mkdir -p "$HOME/.kube"
