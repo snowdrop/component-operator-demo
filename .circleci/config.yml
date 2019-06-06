@@ -179,6 +179,7 @@ jobs:
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
+          /snap/bin/microk8s.kubectl config view --raw
           export FRONTEND_ROUTE_URL=fruit-client-sb.$(minikube ip).nip.io
           curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client
 
