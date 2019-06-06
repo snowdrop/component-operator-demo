@@ -67,9 +67,13 @@ jobs:
 
           RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
 
-          sudo cd /opt/bin
+          cd /opt/bin
           sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
           sudo chmod +x {kubeadm,kubelet,kubectl}
+    - run:
+        name: Use micros8
+        command: |
+          sudo snap install microk8s --classic
 
     - run:
         name: Initialize helm, install ServiceCatalog
