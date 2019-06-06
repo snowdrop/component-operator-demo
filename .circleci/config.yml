@@ -29,11 +29,11 @@ jobs:
     - run:
         name: Start minikube
         command: |
-          sudo minikube addons enable ingress
-          sudo minikube config set cpus 4
-          sudo minikube config set vm-driver none
-          sudo minikube config set kubernetes-version ${KUBE_VERSION}
-          sudo minikube start -v 6
+          minikube addons enable ingress
+          minikube config set cpus 4
+          minikube config set vm-driver none
+          minikube config set kubernetes-version ${KUBE_VERSION}
+          minikube start -v 6
 
 workflows:
   version: 2.1
