@@ -1,9 +1,0 @@
-apiVersion: component.k8s.io/v1alpha1
-kind: Component
-metadata:
-  name: fruit-client-sb
-spec:
-  deploymentMode: innerloop
-  runtime: spring-boot
-  version: 1.5.16
-  exposeService: true
