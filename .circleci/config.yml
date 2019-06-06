@@ -141,6 +141,12 @@ jobs:
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/link_v1alpha2.yaml
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/operator.yaml -n component-operator
 
+    - checkout
+    - run:
+        name: Compile the component-operator-demo project using maven
+        command: |
+          mvn package -DskipTests=true
+
 workflows:
   version: 2.1
   test-component-operator-demo:
