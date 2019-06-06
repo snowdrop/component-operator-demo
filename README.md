@@ -136,21 +136,7 @@ until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | gr
 
 We can now install the OpenShift Ansible Broker
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: automation-broker
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: automation-broker
-  namespace: automation-broker
-EOF
-curl https://raw.githubusercontent.com/openshift/ansible-service-broker/2110c23c28fa391122a17f4dcc7022819dc1aa40/apb/install.yaml | kubectl create -f -
+kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
 ```
 
 Install the `Component Operator`
@@ -309,7 +295,7 @@ When the Dev's pods are ready, then push the code using the following bash scrip
 ./scripts/k8s_push_start.sh fruit-client sb demo
 ```
 
-**REMARK**: the namespace where the application will be deployed must be passed as 3rd paramteer to the bash script
+**REMARK**: the namespace where the application will be deployed must be passed as 3rd paramter to the bash script
 
 As an Ingress route will be created instead of an OpenShift route, then we must adapt the curl command to access the service's address
 and get the fruits
