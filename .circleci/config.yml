@@ -73,9 +73,11 @@ jobs:
 
           systemctl enable --now kubelet
     - run:
-        name: Use micros8
+        name: Use microk8s
         command: |
           sudo snap install microk8s --classic
+          microk8s.enable registry ingress
+          sudo microk8s.start
 
     - run:
         name: Initialize helm, install ServiceCatalog
