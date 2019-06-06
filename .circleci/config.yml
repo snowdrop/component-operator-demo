@@ -88,7 +88,7 @@ jobs:
           # wait until a k8s node is ready
           sleep 10
           n=0
-          until [ $n -ge 10 ]
+          until [ $n -ge 15 ]
           do
             (/snap/bin/microk8s.kubectl get no | grep -z "Ready") && break
             n=$[$n+1]
