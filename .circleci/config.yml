@@ -1,0 +1,37 @@
+version: 2
+executors:
+  k8s-executor:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+    environment:
+      KUBE_VERSION: v1.14.0
+      MINIKUBE_HOME: $HOME
+      KUBECONFIG: $HOME/kube/config
+
+jobs:
+  k8s-setup:
+    executor: k8s-executor
+    steps:
+    - run:
+        name: Install kubectl and minikube
+        command: |
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl
+          chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube && sudo cp minikube /usr/local/bin && rm minikube
+          mkdir -p $HOME/.kube $HOME/.minikube && touch $KUBECONFIG
+  k8s-start:
+    machine: true
+    steps:
+    - run:
+        name: Start minikube
+        command: |
+          sudo minikube start --vm-driver=none --kubernetes-version=${KUBE_VERSION}
+
+workflows:
+  version: 2.1
+  test-component-operator-demo:
+    jobs:
+      - k8s-setup
+      - k8s-test
