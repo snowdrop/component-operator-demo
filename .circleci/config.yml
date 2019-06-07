@@ -45,9 +45,11 @@ jobs:
           sudo iptables -P FORWARD ACCEPT
 
     - run:
-        name: Enable Services dns & storage
+        name: Enable Services dns & storage. Disable internal k8s docker registry
         command: |
           /snap/bin/microk8s.enable dns storage
+          # Disable Internal Docker Registry as we will not use it
+          /snap/bin/microk8s.disable registry
 
     - run:
         name: Enable Services Ingress
@@ -237,29 +239,38 @@ jobs:
           kubectl get pods -n ${NAMESPACE_TESTING}
 
     - run:
+        name: Wait till fruit, backend and DB pods are running/ready
+        command: |
+          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=rhscl-postgresql-apb | grep "Running"; do sleep 10; done
+          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
+          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
+          until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Ready"; do sleep 10; done
+          until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-backend-sb | grep "Ready"; do sleep 10; done
+
+    - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
     - run:
-        name: Logs Frontend and backend logs
+        name: Log Frontend, Backend pod info
         command: |
-          set -x
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           mkdir -p /home/circleci/project/logs/
-
-          echo "Wait till the fruit client, backend and DB pod are  running"
-          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=rhscl-postgresql-apb | grep "Running"; do sleep 10; done
-          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
-          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
-
           for i in "${arr[@]}"
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${NAMESPACE_TESTING})
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
-             kubectl logs -n ${NAMESPACE_TESTING} ${pod_id} > /home/circleci/project/logs/$i.txt
+             echo "#### Stdout Pod Config #####" > /home/circleci/project/logs/$i.txt
+             kubectl get -n ${NAMESPACE_TESTING} ${pod_id} -o yaml >> /home/circleci/project/logs/$i.txt
+
+             echo "#### Stdout ENV defined within the container ####" >> /home/circleci/project/logs/$i.txt
+             kc exec ${pod_name} -n ${NAMESPACE_TESTING} -it -- env
+
+             echo "#### Logs #####" >> /home/circleci/project/logs/$i.txt
+             kubectl logs -n ${NAMESPACE_TESTING} ${pod_id} >> /home/circleci/project/logs/$i.txt
           done
 
     - store_artifacts:
