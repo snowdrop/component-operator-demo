@@ -254,15 +254,17 @@ jobs:
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
-             kubectl logs -n ${namespace} ${pod_id} > $CIRCLE_WORKING_DIRECTORY/$i.txt
+             # kubectl logs -n ${namespace} ${pod_id} > $CIRCLE_WORKING_DIRECTORY/$i.txt
+             kubectl logs -n ${namespace} ${pod_id} > /home/circleci/project/logs/$i.txt
           done
+
     - store_artifacts:
-        path: logs
+        path: /home/circleci/project/logs/
 
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
-          kubectl describe ing/fruit-client-sb -n ${NAMESPACE_TESTING}
+          # kubectl get ing/fruit-client-sb -n ${NAMESPACE_TESTING} -o yaml
           curl -H "Host: fruit-client-sb" 127.0.0.1/api/client
 
 workflows:
