@@ -49,7 +49,7 @@ jobs:
         command: |
           /snap/bin/microk8s.enable dns storage
           # Disable Internal Docker Registry as we will not use it
-          /snap/bin/microk8s.disable registry
+          #/snap/bin/microk8s.disable registry
 
     - run:
         name: Enable Services Ingress
