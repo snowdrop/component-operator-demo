@@ -217,20 +217,20 @@ jobs:
           until [ $n -ge 10 ]
           do
             (kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
-            kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING}
             n=$[$n+1]
             sleep 10
           done
+          kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING}
           echo "fruit-backend-sb deployed"
 
           n=0
           until [ $n -ge 10 ]
           do
             (kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
-            kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING}
             n=$[$n+1]
             sleep 10
           done
+          kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING}
           echo "fruit-client-sb deployed"
 
           kubectl get pods -n ${NAMESPACE_TESTING}
@@ -244,6 +244,7 @@ jobs:
     - run:
         name: Logs Frontend and backend logs
         command: |
+          set -x
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           namespace=demo
           mkdir -p $CIRCLE_WORKING_DIRECTORY/logs
