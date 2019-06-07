@@ -224,7 +224,6 @@ jobs:
     - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
-          sleep 30s
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
@@ -239,7 +238,7 @@ jobs:
 
           for i in "${arr[@]}"
           do
-             pod_name=$(kubectl get pod -l app=$i -o name -n ${NAMESPACE_TESTING})
+             pod_name=$(kubectl get pod -l app=$i -o name -n ${NAMESPACE_TESTING}) | grep "Running"
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
              echo "#### Stdout Pod Config #####" > /home/circleci/project/logs/$i.txt
