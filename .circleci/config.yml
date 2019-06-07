@@ -46,7 +46,7 @@ jobs:
     - run:
         name: Enable Services dns & storage
         command: |
-          /snap/bin/microk8s.enable dns registry storage
+          /snap/bin/microk8s.enable dns storage
 
     - run:
         name: Enable Services Ingress
