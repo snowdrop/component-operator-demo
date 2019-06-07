@@ -240,7 +240,8 @@ jobs:
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${NAMESPACE_TESTING} | grep "Running")
              pod_id=${pod_name#"pod/"}
-             echo "Log app: $i"
+             echo "####################"
+             echo "#### Log Spring Boot application: $i"
              echo "#### Stdout Pod Config #####" > /home/circleci/project/logs/$i.txt
              kubectl get -n ${NAMESPACE_TESTING} ${pod_name} -o yaml >> /home/circleci/project/logs/$i.txt
 
