@@ -7,7 +7,7 @@ executors:
       docker_layer_caching: true
     environment:
       KUBE_VERSION: v1.13.0
-      MICROK8S_VERSION: 1.13/stable
+      MICROK8S_VERSION: 1.13
       MINIKUBE_HOME: $HOME
       KUBECONFIG: $HOME/.kube/config
       OPERATOR_GIT_REF: master
