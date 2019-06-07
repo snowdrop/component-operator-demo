@@ -250,7 +250,7 @@ jobs:
           mkdir -p /home/circleci/project/logs/
 
           echo "Wait a few seconds to be sure to get the logs ..."
-          sleep 30
+          sleep 60
           for i in "${arr[@]}"
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
