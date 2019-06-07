@@ -194,7 +194,7 @@ jobs:
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
              pod_id=${pod_name#"pod/"}
-
+             echo "Log app: $i"
              kubectl logs -n ${namespace} ${pod_id}
           done
 
