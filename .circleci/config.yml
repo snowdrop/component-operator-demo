@@ -6,7 +6,8 @@ executors:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true
     environment:
-      KUBE_VERSION: v1.14.0
+      KUBE_VERSION: v1.13.0
+      MICROK8S_VERSION: 1.13/stable
       MINIKUBE_HOME: $HOME
       KUBECONFIG: $HOME/.kube/config
       OPERATOR_GIT_REF: master
@@ -27,7 +28,7 @@ jobs:
     - run:
         name: Install microk8s
         command: |
-          sudo snap install microk8s --classic
+          sudo snap install microk8s --classic --channel=${MICROK8S_VERSION}/stable
 
           # wait until a k8s node is ready
           sleep 10
