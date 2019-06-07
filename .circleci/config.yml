@@ -150,14 +150,6 @@ jobs:
           - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
             kind: "Component"
             metadata:
-              annotations:
-                app.openshift.io/git-ref: "master"
-                app.openshift.io/component-name: "fruit-backend-sb"
-                app.openshift.io/artifact-copy-args: "*.jar"
-                app.openshift.io/java-app-jar: "fruit-backend-sb-0.0.1-SNAPSHOT.jar"
-                app.openshift.io/git-dir: "fruit-backend-sb"
-                app.openshift.io/git-uri: "https://github.com/snowdrop/component-operator-demo.git"
-                app.openshift.io/runtime-image: "fruit-backend-sb"
               labels:
                 app: "fruit-backend-sb"
                 version: "0.0.1-SNAPSHOT"
@@ -219,8 +211,28 @@ jobs:
     - run:
         name: Wait till the fruit-backend, fruit-client have been started
         command: |
-          until kubectl get pods -l app=fruit-backend-sb -n demo | grep 1/1; do sleep 10; done
-          until kubectl get pods -l app=fruit-client-sb -n demo | grep 1/1; do sleep 10; done
+          sleep 10
+          n=0
+          until [ $n -ge 10 ]
+          do
+            (kubectl get pods -l app=fruit-backend-sb -n demo | grep 1/1) && break
+            kubectl get pods -l app=fruit-backend-sb -n demo
+            n=$[$n+1]
+            sleep 10
+          done
+          echo "fruit-backend-sb deployed"
+
+          n=0
+          until [ $n -ge 10 ]
+          do
+            (kubectl get pods -l app=fruit-client-sb -n demo | grep 1/1) && break
+            kubectl get pods -l app=fruit-client-sb -n demo
+            n=$[$n+1]
+            sleep 10
+          done
+          echo "fruit-client-sb deployed"
+
+          kubectl get pods -n demo
 
     - run:
         name: Push now the uber jar file of the frontend, backend
