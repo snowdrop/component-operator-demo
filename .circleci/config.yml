@@ -187,10 +187,12 @@ jobs:
     - run:
         name: Logs Frontend and backend logs
         command: |
-          declare -a arr=("fruit-client-sb" fruit-backend-sb")
+          set -x
+          # declare -a arr=("fruit-client-sb" fruit-backend-sb")
           namespace=demo
 
-          for i in "${arr[@]}"
+          # for i in "${arr[@]}"
+          for i in "fruit-client-sb fruit-backend-sb"
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
              pod_id=${pod_name#"pod/"}
