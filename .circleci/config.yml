@@ -81,7 +81,7 @@ jobs:
           curl -L https://git.io/get_helm.sh | bash
 
     - run:
-        name: Use microk8s
+        name: Install microk8s
         command: |
           sudo snap install microk8s --classic
 
@@ -99,7 +99,15 @@ jobs:
           # Allow intra-pod communication
           sudo iptables -P FORWARD ACCEPT
 
-          echo n |/snap/bin/microk8s.enable dns ingress registry storage
+    - run:
+        name: Enable Services dns & storage
+        command: |
+          /snap/bin/microk8s.enable dns registry storage
+
+    - run:
+        name: Enable Services Ingress
+        command: |
+          /snap/bin/microk8s.enable ingress
 
     - run:
         name: Initialize helm
