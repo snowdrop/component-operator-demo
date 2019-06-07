@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.0
 
 executors:
   k8s-executor:
@@ -189,15 +189,17 @@ jobs:
         command: |
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           namespace=demo
+          mkdir -p $HOME/artifacts/
 
           for i in "${arr[@]}"
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
-             kubectl logs -n ${namespace} ${pod_id}
+             kubectl logs -n ${namespace} ${pod_id} > $HOME/artifacts/$i.txt
           done
-
+    - store_artifacts:
+        path: $HOME/artifacts/
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
