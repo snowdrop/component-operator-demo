@@ -254,7 +254,7 @@ jobs:
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
     - run:
-        name: Log Frontend, Backend pod info
+        name: Log of Frontend, Backend applications, pod configuration and their ENV variables
         command: |
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           mkdir -p /home/circleci/project/logs/
@@ -267,7 +267,7 @@ jobs:
              kubectl get -n ${NAMESPACE_TESTING} ${pod_id} -o yaml >> /home/circleci/project/logs/$i.txt
 
              echo "#### Stdout ENV defined within the container ####" >> /home/circleci/project/logs/$i.txt
-             kc exec ${pod_name} -n ${NAMESPACE_TESTING} -it -- env
+             kc exec ${pod_id} -n ${NAMESPACE_TESTING} env
 
              echo "#### Logs #####" >> /home/circleci/project/logs/$i.txt
              kubectl logs -n ${NAMESPACE_TESTING} ${pod_id} >> /home/circleci/project/logs/$i.txt
