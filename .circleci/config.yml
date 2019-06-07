@@ -124,7 +124,7 @@ jobs:
         command: |
           kubectl create namespace demo
           echo "Deploy fruit-backend-sb"
-          cat <<EOF | kubectl apply -f -
+          cat \<<EOF | kubectl apply -f -
           ---
           apiVersion: "v1"
           kind: "List"
@@ -184,7 +184,7 @@ jobs:
           EOF
 
           echo "Deploy fruit-client-sb"
-          cat <<EOF | kubectl apply -f -
+          cat \<<EOF | kubectl apply -f -
           ---
           apiVersion: "v1"
           kind: "List"
