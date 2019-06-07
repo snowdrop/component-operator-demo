@@ -264,7 +264,7 @@ jobs:
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
              echo "#### Stdout Pod Config #####" > /home/circleci/project/logs/$i.txt
-             kubectl get -n ${NAMESPACE_TESTING} ${pod_id} -o yaml >> /home/circleci/project/logs/$i.txt
+             kubectl get -n ${NAMESPACE_TESTING} ${pod_name} -o yaml >> /home/circleci/project/logs/$i.txt
 
              echo "#### Stdout ENV defined within the container ####" >> /home/circleci/project/logs/$i.txt
              kc exec ${pod_id} -n ${NAMESPACE_TESTING} env
