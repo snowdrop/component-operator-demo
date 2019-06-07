@@ -213,37 +213,11 @@ jobs:
           EOF
 
     - run:
-        name: Wait till the fruit-backend, fruit-client have been started
-        command: |
-          sleep 10
-          n=0
-          until [ $n -ge 10 ]
-          do
-            (kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
-            n=$[$n+1]
-            sleep 10
-          done
-          kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING}
-          echo "fruit-backend-sb deployed"
-
-          n=0
-          until [ $n -ge 10 ]
-          do
-            (kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
-            n=$[$n+1]
-            sleep 10
-          done
-          kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING}
-          echo "fruit-client-sb deployed"
-
-          kubectl get pods -n ${NAMESPACE_TESTING}
-
-    - run:
         name: Wait till fruit, backend and DB pods are running/ready
         command: |
           until kubectl get pods -n ${NAMESPACE_TESTING} -l app=rhscl-postgresql-apb | grep "Running"; do sleep 10; done
           until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
-          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
+          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-backend-sb | grep "Running"; do sleep 10; done
           until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Ready"; do sleep 10; done
           until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-backend-sb | grep "Ready"; do sleep 10; done
 
@@ -267,7 +241,7 @@ jobs:
              kubectl get -n ${NAMESPACE_TESTING} ${pod_name} -o yaml >> /home/circleci/project/logs/$i.txt
 
              echo "#### Stdout ENV defined within the container ####" >> /home/circleci/project/logs/$i.txt
-             kc exec ${pod_id} -n ${NAMESPACE_TESTING} env
+             kubectl exec ${pod_id} -n ${NAMESPACE_TESTING} env
 
              echo "#### Logs #####" >> /home/circleci/project/logs/$i.txt
              kubectl logs -n ${NAMESPACE_TESTING} ${pod_id} >> /home/circleci/project/logs/$i.txt
