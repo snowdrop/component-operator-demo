@@ -132,17 +132,18 @@ jobs:
         command: |
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           namespace=demo
-          mkdir -p $HOME/artifacts/
+          mkdir -p $CIRCLE_WORKING_DIRECTORY/logs
 
           for i in "${arr[@]}"
           do
              pod_name=$(kubectl get pod -l app=$i -o name -n ${namespace})
              pod_id=${pod_name#"pod/"}
              echo "Log app: $i"
-             kubectl logs -n ${namespace} ${pod_id} > $HOME/artifacts/$i.txt
+             kubectl logs -n ${namespace} ${pod_id} > $CIRCLE_WORKING_DIRECTORY/$i.txt
           done
     - store_artifacts:
-        path: $HOME/artifacts/
+        path: $CIRCLE_WORKING_DIRECTORY/logs
+
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
