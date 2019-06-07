@@ -247,7 +247,8 @@ jobs:
           set -x
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           namespace=demo
-          mkdir -p $CIRCLE_WORKING_DIRECTORY/logs
+          # mkdir -p $CIRCLE_WORKING_DIRECTORY/logs
+          mkdir -p /home/circleci/project/logs/
 
           for i in "${arr[@]}"
           do
