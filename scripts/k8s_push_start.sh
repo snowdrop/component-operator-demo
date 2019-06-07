@@ -7,7 +7,7 @@ runtime=$2
 project=$component-$runtime
 namespace=${3:-my-spring-app}
 
-pod_name=$(kubectl get pod -lapp=${project} -o name -n ${namespace}) | grep "Running"
+pod_name=$(kubectl get pod -lapp=${project} -o name -n ${namespace} | grep "Running")
 pod_id=${pod_name#"pod/"}
 name=$(cut -d'/' -f2 <<<$pod_name)
 
