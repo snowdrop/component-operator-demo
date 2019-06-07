@@ -10,6 +10,7 @@ executors:
       MINIKUBE_HOME: $HOME
       KUBECONFIG: $HOME/.kube/config
       OPERATOR_GIT_REF: master
+      NAMESPACE_TESTING: demo
 
 jobs:
   k8s-setup-start:
@@ -115,16 +116,16 @@ jobs:
     #- run:
     #    name: Deploy the yaml resources populated by ap4k within the demo namespace
     #    command: |
-    #      kubectl create namespace demo
-    #      kubectl apply -n demo -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
-    #      kubectl apply -n demo -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
+    #      kubectl create namespace ${NAMESPACE_TESTING}
+    #      kubectl apply -n ${NAMESPACE_TESTING} -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml
+    #      kubectl apply -n ${NAMESPACE_TESTING} -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml
 
     - run:
-        name: Deploy the CORRECT yaml resources within the demo namespace
+        name: Deploy the CORRECT yaml resources within the ${NAMESPACE_TESTING} namespace
         command: |
-          kubectl create namespace demo
+          kubectl create namespace ${NAMESPACE_TESTING}
           echo "Deploy fruit-backend-sb"
-          cat \<<EOF | kubectl apply -f -
+          cat \<<EOF | kubectl apply -n ${NAMESPACE_TESTING} -f -
           ---
           apiVersion: "v1"
           kind: "List"
@@ -176,7 +177,7 @@ jobs:
           EOF
 
           echo "Deploy fruit-client-sb"
-          cat \<<EOF | kubectl apply -f -
+          cat \<<EOF | kubectl apply -n ${NAMESPACE_TESTING} -f -
           ---
           apiVersion: "v1"
           kind: "List"
@@ -215,8 +216,8 @@ jobs:
           n=0
           until [ $n -ge 10 ]
           do
-            (kubectl get pods -l app=fruit-backend-sb -n demo | grep 1/1) && break
-            kubectl get pods -l app=fruit-backend-sb -n demo
+            (kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
+            kubectl get pods -l app=fruit-backend-sb -n ${NAMESPACE_TESTING}
             n=$[$n+1]
             sleep 10
           done
@@ -225,20 +226,20 @@ jobs:
           n=0
           until [ $n -ge 10 ]
           do
-            (kubectl get pods -l app=fruit-client-sb -n demo | grep 1/1) && break
-            kubectl get pods -l app=fruit-client-sb -n demo
+            (kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING} | grep 1/1) && break
+            kubectl get pods -l app=fruit-client-sb -n ${NAMESPACE_TESTING}
             n=$[$n+1]
             sleep 10
           done
           echo "fruit-client-sb deployed"
 
-          kubectl get pods -n demo
+          kubectl get pods -n ${NAMESPACE_TESTING}
 
     - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
-          ./scripts/k8s_push_start.sh fruit-backend sb demo
-          ./scripts/k8s_push_start.sh fruit-client sb demo
+          ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
+          ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
     - run:
         name: Logs Frontend and backend logs
@@ -260,7 +261,7 @@ jobs:
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
-          kubectl describe ing/fruit-client-sb -n demo
+          kubectl describe ing/fruit-client-sb -n ${NAMESPACE_TESTING}
           curl -H "Host: fruit-client-sb" 127.0.0.1/api/client
 
 workflows:
