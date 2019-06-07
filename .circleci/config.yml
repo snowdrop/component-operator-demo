@@ -257,7 +257,7 @@ jobs:
              kubectl logs -n ${namespace} ${pod_id} > $CIRCLE_WORKING_DIRECTORY/$i.txt
           done
     - store_artifacts:
-        path: $CIRCLE_WORKING_DIRECTORY/logs
+        path: logs
 
     - run:
         name: Check if the client can get the fruits from the backend/db
