@@ -251,9 +251,6 @@ jobs:
              kubectl logs -n ${NAMESPACE_TESTING} ${pod_id} >> /home/circleci/project/logs/$i.txt
           done
 
-    - store_artifacts:
-        path: /home/circleci/project/logs/
-
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
@@ -265,6 +262,10 @@ jobs:
           else
              echo "FAILED"
           fi
+
+    - store_artifacts:
+        path: /home/circleci/project/logs/
+
 workflows:
   version: 2.1
   test-component-operator-demo:
