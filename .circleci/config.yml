@@ -259,6 +259,7 @@ jobs:
         command: |
           expected="[{"id":1,"name":"Cherry"},{"id":2,"name":"Apple"},{"id":3,"name":"Banana"}]"
           response=$(curl -H "Host: fruit-client-sb" 127.0.0.1/api/client)
+          echo $resposnse > /home/circleci/project/logs/fruits_curl_req_results.txt
           if [ "$response" = "$expected" ]; then
              echo "SUCCEEDED"
           else
