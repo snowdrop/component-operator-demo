@@ -233,8 +233,8 @@ jobs:
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           mkdir -p /home/circleci/project/logs/
 
-          echo "Wait till spring boot applications have been started"
-          sleep 120s
+          echo "Wait till Spring Boot applications have been started"
+          sleep 240s
 
           for i in "${arr[@]}"
           do
