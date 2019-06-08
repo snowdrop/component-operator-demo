@@ -254,9 +254,10 @@ jobs:
     - run:
         name: Check if the client can get the fruits from the backend/db
         command: |
-          expected="[{"id":1,"name":"Cherry"},{"id":2,"name":"Apple"},{"id":3,"name":"Banana"}]"
+          expected=[{"id":1,"name":"Cherry"},{"id":2,"name":"Apple"},{"id":3,"name":"Banana"}]
           response=$(curl -H "Host: fruit-client-sb" 127.0.0.1/api/client)
           echo $response > /home/circleci/project/logs/fruits_curl_req_results.txt
+          echo $expected >> /home/circleci/project/logs/fruits_curl_req_results.txt
           if [ "$response" == "$expected" ]; then
              echo "SUCCEEDED"
           else
