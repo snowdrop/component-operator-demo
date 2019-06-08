@@ -224,6 +224,8 @@ jobs:
     - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
+          echo "Wait till Spring Boot applications have been configure"
+          sleep 240s
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
@@ -232,9 +234,6 @@ jobs:
         command: |
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
           mkdir -p /home/circleci/project/logs/
-
-          echo "Wait till Spring Boot applications have been started"
-          sleep 240s
 
           for i in "${arr[@]}"
           do
