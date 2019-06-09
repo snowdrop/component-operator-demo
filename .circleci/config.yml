@@ -17,6 +17,12 @@ jobs:
   k8s-setup-start:
     executor: k8s-executor
     steps:
+    - checkout
+    - run:
+        name: Setup initial
+        command:
+          mkdir -p /home/circleci/project/logs/
+
     - run:
         name: Install kubectl, Helm
         command: |
@@ -66,7 +72,7 @@ jobs:
           kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
     - run:
-        name: Install ServiceCatalog using helm
+        name: Install ServiceCatalog using helm & OAB
         command: |
           # Adds the chart repository for the service catalog
           helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
@@ -78,9 +84,6 @@ jobs:
           until kubectl get pods -n catalog -l app=catalog-catalog-apiserver | grep 2/2; do sleep 1; done
           until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | grep 1/1; do sleep 1; done
 
-    - run:
-        name: Install OpenShift Ansible Broker
-        command: |
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
           until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 10; done
 
@@ -96,7 +99,6 @@ jobs:
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/link_v1alpha2.yaml
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/operator.yaml -n component-operator
 
-    - checkout
     - restore_cache:
         keys:
           - demo
@@ -222,10 +224,14 @@ jobs:
           until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-backend-sb | grep "Ready"; do sleep 10; done
 
     - run:
+        name: Wait and log pods, components, links, capabilities, ...
+        command: |
+          sleep 240s
+          kubectl get -n ${NAMESPACE_TESTING} all,servicebinding,serviceinstance,pvc > /home/circleci/project/logs/all.txt
+
+    - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
-          echo "Wait till Spring Boot applications have been configure"
-          sleep 240s
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
@@ -233,7 +239,6 @@ jobs:
         name: Log of Frontend, Backend applications, pod configuration and their ENV variables
         command: |
           declare -a arr=("fruit-client-sb" "fruit-backend-sb")
-          mkdir -p /home/circleci/project/logs/
 
           for i in "${arr[@]}"
           do
