@@ -152,7 +152,7 @@ jobs:
               - name: "postgresql_database"
                 value: "my_data"
               - name: "postgresql_version"
-                value: "9.6"
+                value: "10"
           - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
             kind: "Component"
             metadata:
