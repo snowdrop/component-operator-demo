@@ -44,7 +44,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 )
 @Link(
     name = "link-to-fruit-backend",
-    targetcomponentname = "fruit-client-sb",
+    componentName = "fruit-client-sb",
     kind = Kind.Env,
     envVars = @Env(
         name = "OPENSHIFT_ENDPOINT_BACKEND",

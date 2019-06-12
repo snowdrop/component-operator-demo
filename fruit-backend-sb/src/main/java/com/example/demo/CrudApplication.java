@@ -55,13 +55,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
             @Parameter(key = "postgresql_user", value = "luke"),
             @Parameter(key = "postgresql_password", value = "secret"),
             @Parameter(key = "postgresql_database", value = "my_data"),
-            @Parameter(key = "postgresql_version", value = "10")
+            @Parameter(key = "postgresql_version", value = "9.6")
         }
     )
 )
 @Link(
     name = "link-to-database",
-    targetcomponentname = "fruit-backend-sb",
+    componentName = "fruit-backend-sb",
     kind = Kind.Secret,
     ref = "postgresql-db")
 @SpringBootApplication
