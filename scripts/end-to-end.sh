@@ -4,7 +4,7 @@
 # End to end scenario to be executed on minikube or k8s cluster
 #
 CLUSTER_IP=${1:-$(minikube ip)}
-SLEEP_TIME=30s
+SLEEP_TIME=60s
 TIME=$(date +"%Y-%m-%d_%H-%M")
 REPORT_FILE="result_${TIME}.txt"
 
@@ -15,6 +15,8 @@ echo "##################################################################"
 echo "Deleting the resources components, links and capabilities"
 echo "##################################################################"
 kubectl delete components,link,capabilities --all -n demo
+echo "Sleep ${SLEEP_TIME}"
+sleep ${SLEEP_TIME}
 
 echo "##################################################################"
 echo "Deploy the component for the fruit-backend, link and capability"
@@ -31,7 +33,7 @@ echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
 printf "Resources status\n=================\n" > ${REPORT_FILE}
-kubectl get all,pvc,ing,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+kubectl get all,pvc,ing,routes,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
 
 printf "\nENV injected to the fruit backend\n=====================\n" >> ${REPORT_FILE}
 kubectl exec -n demo $(kubectl get pod -n demo -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') env | grep DB >> ${REPORT_FILE}
@@ -53,7 +55,7 @@ sleep ${SLEEP_TIME}
 echo "##################################################################"
 echo "Curl Fruit service"
 echo "##################################################################"
-printf "\nCurl Fruit Endpoint service\n=====================\n"
+printf "\nCurl Fruit Endpoint service\n=====================\n"  >> ${REPORT_FILE}
 
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
     echo "No ingress resources found. We run on OpenShift"
