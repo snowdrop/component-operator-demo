@@ -4,9 +4,11 @@
 # End to end scenario to be executed on minikube or k8s cluster
 #
 CLUSTER_IP=${1:-$(minikube ip)}
-SLEEP_TIME=${2:-60s}
+SLEEP_TIME=30s
 TIME=$(date +"%Y-%m-%d_%H-%M")
 REPORT_FILE="result_${TIME}.txt"
+
+INGRESS_RESOURCES=$(kubectl get ing 2>&1)
 
 kubectl create ns demo
 echo "##################################################################"
@@ -52,5 +54,12 @@ echo "##################################################################"
 echo "Curl Fruit service"
 echo "##################################################################"
 printf "\nCurl Fruit Endpoint service\n=====================\n"
-export FRONTEND_ROUTE_URL=fruit-client-sb.$CLUSTER_IP.nip.io
-curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client >> ${REPORT_FILE}
+
+if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
+    echo "No ingress resources found. We run on OpenShift"
+    FRONTEND_ROUTE_URL=$(kubectl get route/fruit-client-sb -o jsonpath='{.spec.host}' -n demo)
+    curl http://$FRONTEND_ROUTE_URL/api/client >> ${REPORT_FILE}
+else
+    FRONTEND_ROUTE_URL=fruit-client-sb.$CLUSTER_IP.nip.io
+    curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client >> ${REPORT_FILE}
+fi
