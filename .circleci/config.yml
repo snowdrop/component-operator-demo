@@ -210,7 +210,7 @@ jobs:
               componentName: "fruit-client-sb"
               ref: ""
               envs:
-              - name: "OPENSHIFT_ENDPOINT_BACKEND"
+              - name: "ENDPOINT_BACKEND"
                 value: "http://fruit-backend-sb:8080/api/fruits"
           EOF
 

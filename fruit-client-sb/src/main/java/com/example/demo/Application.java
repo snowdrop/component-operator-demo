@@ -38,7 +38,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     componentName = "fruit-client-sb",
     kind = Kind.Env,
     envVars = @Env(
-        name = "OPENSHIFT_ENDPOINT_BACKEND",
+        name = "ENDPOINT_BACKEND",
         value = "http://fruit-backend-sb:8080/api/fruits"
     )
 )

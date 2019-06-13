@@ -207,7 +207,7 @@ in order to configure the application to access another `component` using its se
                   kind = "Env",
                   ref = "",
                   envVars = @Env(
-                          name  = "OPENSHIFT_ENDPOINT_BACKEND",
+                          name  = "ENDPOINT_BACKEND",
                           value = "http://fruit-backend-sb:8080/api/fruits"
                   )
 ))
@@ -342,7 +342,7 @@ npm install -s --only=production
 
 - Run locally
 ```bash
-export OPENSHIFT_ENDPOINT_BACKEND=http://fruit-backend-sb.my-spring-app.195.201.87.126.nip.io/api/fruits
+export ENDPOINT_BACKEND=http://fruit-backend-sb.my-spring-app.195.201.87.126.nip.io/api/fruits
 npm run -d start      
 ```
 
