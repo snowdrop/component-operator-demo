@@ -33,7 +33,11 @@ echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
 printf "Resources status\n=================\n" > ${REPORT_FILE}
-kubectl get all,pvc,ing,routes,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
+  kubectl get all,pvc,routes,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+else
+  kubectl get all,pvc,ing,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+fi
 
 printf "\nENV injected to the fruit backend\n=====================\n" >> ${REPORT_FILE}
 kubectl exec -n demo $(kubectl get pod -n demo -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') env | grep DB >> ${REPORT_FILE}
