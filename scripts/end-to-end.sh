@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 #
+# Prerequisite : install tool jq
+#
 # End to end scenario to be executed on minikube, minishift or k8s cluster
 # Example: ./scripts/end-to-end.sh CLUSTER_IP
 # where CLUSTER_IP represents the external IP address exposed top of the VM
@@ -34,19 +36,33 @@ kubectl apply -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml -n d
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-printf "Resources status\n=================\n" > ${REPORT_FILE}
+printf "Resources status\n=====================================\n" > ${REPORT_FILE}
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
-  kubectl get all,pvc,routes,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+  for i in pod deployment deploymentconfig services routes pvc serviceinstance servicebinding secret/postgresql-db
+  do
+    uppercaseResourceName=$(echo $i | tr a-z A-Z)
+    printf "\n$uppercaseResourceName : \n"  >> ${REPORT_FILE}
+    kubectl get $i -n demo >> ${REPORT_FILE}
+    printf "=========================================\n"  >> ${REPORT_FILE}
+  done
 else
-  kubectl get all,pvc,ing,serviceinstance,servicebinding,secrets -n demo >> ${REPORT_FILE}
+  for i in pod deployment servicces ing pvc serviceinstance servicebinding secret/postgresql-db
+  do
+    uppercaseResourceName=$(echo $i | tr a-z A-Z)
+    printf "\n$uppercaseResourceName : \n"  >> ${REPORT_FILE}
+    kubectl get $i -n demo >> ${REPORT_FILE}
+    printf "=========================================\n"  >> ${REPORT_FILE}
+  done
 fi
 
-printf "\nENV injected to the fruit backend\n=====================\n" >> ${REPORT_FILE}
+printf "\nENV injected to the fruit backend\n=========================================\n" >> ${REPORT_FILE}
 kubectl exec -n demo $(kubectl get pod -n demo -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') env | grep DB >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
-printf "\nENV var defined for the fruit client\n=====================\n" >> ${REPORT_FILE}
-kubectl describe -n demo pod/$(kubectl get pod -n demo -lapp=fruit-client-sb | grep "Running" | awk '{print $1}') >> ${REPORT_FILE}
+printf "\nENV var defined for the fruit client\n=========================================\n" >> ${REPORT_FILE}
+# kubectl describe -n demo pod/$(kubectl get pod -n demo -lapp=fruit-client-sb | grep "Running" | awk '{print $1}') >> ${REPORT_FILE}
+# See jsonpath examples : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+for item in $(kubectl get pod -n demo -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
 echo "##################################################################"
@@ -61,7 +77,7 @@ sleep ${SLEEP_TIME}
 echo "##################################################################"
 echo "Curl Fruit service"
 echo "##################################################################"
-printf "\nCurl Fruit Endpoint service\n=====================\n"  >> ${REPORT_FILE}
+printf "\nCurl Fruit Endpoint service\n=========================================\n"  >> ${REPORT_FILE}
 
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
     echo "No ingress resources found. We run on OpenShift"
