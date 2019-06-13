@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 #
-# End to end scenario to be executed on minikube or k8s cluster
+# End to end scenario to be executed on minikube, minishift or k8s cluster
+# Example: ./scripts/end-to-end.sh CLUSTER_IP
+# where CLUSTER_IP represents the external IP address exposed top of the VM
 #
 CLUSTER_IP=${1:-$(minikube ip)}
 SLEEP_TIME=60s
