@@ -37,7 +37,7 @@ sleep ${SLEEP_TIME}
 
 printTitle "Report status : ${TIME}" > ${REPORT_FILE}
 
-printTitle "Status of the resources created using the CRDs : Component, Link or Capability" >> ${REPORT_FILE}
+printTitle "1. Status of the resources created using the CRDs : Component, Link or Capability" >> ${REPORT_FILE}
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
   for i in components links capabilities pods deployments deploymentconfigs services routes pvc serviceinstances servicebindings secret/postgresql-db
   do
@@ -54,11 +54,11 @@ else
   done
 fi
 
-printTitle "ENV injected to the fruit backend component" >> ${REPORT_FILE}
+printTitle "2. ENV injected to the fruit backend component" >> ${REPORT_FILE}
 kubectl exec -n demo $(kubectl get pod -n demo -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') env | grep DB >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
-printTitle "ENV var defined for the fruit client component" >> ${REPORT_FILE}
+printTitle "3. ENV var defined for the fruit client component" >> ${REPORT_FILE}
 # kubectl describe -n demo pod/$(kubectl get pod -n demo -lapp=fruit-client-sb | grep "Running" | awk '{print $1}') >> ${REPORT_FILE}
 # See jsonpath examples : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 for item in $(kubectl get pod -n demo -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
@@ -72,7 +72,7 @@ echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
 printTitle "Curl Fruit service"
-printTitle "Curl Fruit Endpoint service"  >> ${REPORT_FILE}
+printTitle "4. Curl Fruit Endpoint service"  >> ${REPORT_FILE}
 
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
     echo "No ingress resources found. We run on OpenShift" >> ${REPORT_FILE}
