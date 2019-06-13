@@ -14,73 +14,68 @@ REPORT_FILE="result_${TIME}.txt"
 
 INGRESS_RESOURCES=$(kubectl get ing 2>&1)
 
+function printTitle {
+  r=$(typeset i=${#1} c="=" s="" ; while ((i)) ; do ((i=i-1)) ; s="$s$c" ; done ; echo  "$s" ;)
+  printf "$r\n$1\n$r\n"
+}
+
 kubectl create ns demo
-echo "##################################################################"
-echo "Deleting the resources components, links and capabilities"
-echo "##################################################################"
+printTitle "Deleting the resources components, links and capabilities"
 kubectl delete components,link,capabilities --all -n demo
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-echo "##################################################################"
-echo "Deploy the component for the fruit-backend, link and capability"
-echo "##################################################################"
+printTitle "Deploy the component for the fruit-backend, link and capability"
 kubectl apply -f fruit-backend-sb/target/classes/META-INF/ap4k/component.yml -n demo
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-echo "##################################################################"
-echo "Deploy the component for the fruit-client, link"
-echo "##################################################################"
+printTitle "Deploy the component for the fruit-client, link"
 kubectl apply -f fruit-client-sb/target/classes/META-INF/ap4k/component.yml -n demo
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-printf "Resources status\n=====================================\n" > ${REPORT_FILE}
+printTitle "Report status : ${TIME}" > ${REPORT_FILE}
+
+printTitle "Status of the resources created using the CRDs : Component, Link or Capability" >> ${REPORT_FILE}
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
-  for i in pod deployment deploymentconfig services routes pvc serviceinstance servicebinding secret/postgresql-db
+  for i in components links capabilities pods deployments deploymentconfigs services routes pvc serviceinstances servicebindings secret/postgresql-db
   do
-    uppercaseResourceName=$(echo $i | tr a-z A-Z)
-    printf "\n$uppercaseResourceName : \n"  >> ${REPORT_FILE}
+    printTitle "$(echo $i | tr a-z A-Z)" >> ${REPORT_FILE}
     kubectl get $i -n demo >> ${REPORT_FILE}
-    printf "=========================================\n"  >> ${REPORT_FILE}
+    printf "\n" >> ${REPORT_FILE}
   done
 else
-  for i in pod deployment servicces ing pvc serviceinstance servicebinding secret/postgresql-db
+  for i in components links capabilities pods deployments servicces ingresses pvc serviceinstances servicebindings secret/postgresql-db
   do
-    uppercaseResourceName=$(echo $i | tr a-z A-Z)
-    printf "\n$uppercaseResourceName : \n"  >> ${REPORT_FILE}
+    printTitle "$(echo $i | tr a-z A-Z)" >> ${REPORT_FILE}
     kubectl get $i -n demo >> ${REPORT_FILE}
-    printf "=========================================\n"  >> ${REPORT_FILE}
+    printf "\n" >> ${REPORT_FILE}
   done
 fi
 
-printf "\nENV injected to the fruit backend\n=========================================\n" >> ${REPORT_FILE}
+printTitle "ENV injected to the fruit backend component" >> ${REPORT_FILE}
 kubectl exec -n demo $(kubectl get pod -n demo -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') env | grep DB >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
-printf "\nENV var defined for the fruit client\n=========================================\n" >> ${REPORT_FILE}
+printTitle "ENV var defined for the fruit client component" >> ${REPORT_FILE}
 # kubectl describe -n demo pod/$(kubectl get pod -n demo -lapp=fruit-client-sb | grep "Running" | awk '{print $1}') >> ${REPORT_FILE}
 # See jsonpath examples : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 for item in $(kubectl get pod -n demo -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
-echo "##################################################################"
-echo "Push fruit and backend"
-echo "##################################################################"
+printTitle "Push fruit and backend"
 ./scripts/k8s_push_start.sh fruit-backend sb demo
 ./scripts/k8s_push_start.sh fruit-client sb demo
 
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-echo "##################################################################"
-echo "Curl Fruit service"
-echo "##################################################################"
-printf "\nCurl Fruit Endpoint service\n=========================================\n"  >> ${REPORT_FILE}
+printTitle "Curl Fruit service"
+printTitle "Curl Fruit Endpoint service"  >> ${REPORT_FILE}
 
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
-    echo "No ingress resources found. We run on OpenShift"
+    echo "No ingress resources found. We run on OpenShift" >> ${REPORT_FILE}
     FRONTEND_ROUTE_URL=$(kubectl get route/fruit-client-sb -o jsonpath='{.spec.host}' -n demo)
     curl http://$FRONTEND_ROUTE_URL/api/client >> ${REPORT_FILE}
 else
