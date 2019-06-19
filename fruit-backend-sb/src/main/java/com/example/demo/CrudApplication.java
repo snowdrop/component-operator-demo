@@ -29,7 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @CompositeApplication(
     name = "fruit-backend-sb",
     exposeService = true,
-    envVars = @Env(
+    envs = @Env(
         name = "SPRING_PROFILES_ACTIVE",
         value = "openshift-catalog")
 )
