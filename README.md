@@ -226,7 +226,7 @@ will use to configure, in this example, the `DataSource`'s object able to call t
         exposeService = true,
         envVars = @Env(
                 name = "SPRING_PROFILES_ACTIVE",
-                value = "openshift-catalog"),
+                value = "broker-catalog"),
         links = @Link(
                 name = "Secret to be injected as EnvVar using Service's secret",
                 targetcomponentname = "fruit-backend-sb",

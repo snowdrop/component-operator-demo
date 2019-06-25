@@ -169,7 +169,7 @@ jobs:
               exposeService: true
               envs:
               - name: "SPRING_PROFILES_ACTIVE"
-                value: "openshift-catalog"
+                value: "broker-catalog"
           - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
             kind: "Link"
             metadata:

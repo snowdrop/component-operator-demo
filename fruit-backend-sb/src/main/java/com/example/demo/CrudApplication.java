@@ -31,7 +31,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     exposeService = true,
     envs = @Env(
         name = "SPRING_PROFILES_ACTIVE",
-        value = "openshift-catalog")
+        value = "broker-catalog")
 )
 @ServiceCatalog(
     instances = @ServiceCatalogInstance(
