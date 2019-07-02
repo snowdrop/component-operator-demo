@@ -95,7 +95,10 @@ jobs:
           helm repo add appscode https://charts.appscode.com/stable/
           helm repo update
           helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
-          --namespace kube-system --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
+          --namespace kubedb --set apiserver.enableValidatingWebhook=false,apiserver.enableMutatingWebhook=false
+
+          helm install appscode/kubedb-catalog --name kubedb-catalog --version 0.12.0 \
+          --namespace kubedb --set catalog.postgres=true
 
     - run:
         name: Install Component Operator from master branch
