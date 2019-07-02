@@ -62,31 +62,36 @@ jobs:
         command: |
           /snap/bin/microk8s.enable ingress
 
+    # - run:
+    #     name: Initialize helm
+    #     command: |
+    #       helm init
+    #
+    #       until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
+    #
+    #       kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+
+    # - run:
+    #     name: Install ServiceCatalog using helm & OAB
+    #     command: |
+    #       # Adds the chart repository for the service catalog
+    #       helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
+    #
+    #       # Installs the service catalog
+    #       helm install svc-cat/catalog --name catalog --namespace catalog
+    #
+    #       # Wait until the catalog is ready before moving on
+    #       until kubectl get pods -n catalog -l app=catalog-catalog-apiserver | grep 2/2; do sleep 1; done
+    #       until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | grep 1/1; do sleep 1; done
+    #
+    #       kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
+    #       until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 10; done
+
     - run:
-        name: Initialize helm
+        name: Install KubeDB controller and Postgres databases
         command: |
-          helm init
-
-          until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
-
-          kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
-
-    - run:
-        name: Install ServiceCatalog using helm & OAB
-        command: |
-          # Adds the chart repository for the service catalog
-          helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
-
-          # Installs the service catalog
-          helm install svc-cat/catalog --name catalog --namespace catalog
-
-          # Wait until the catalog is ready before moving on
-          until kubectl get pods -n catalog -l app=catalog-catalog-apiserver | grep 2/2; do sleep 1; done
-          until kubectl get pods -n catalog -l app=catalog-catalog-controller-manager | grep 1/1; do sleep 1; done
-
-          kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
-          until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 10; done
-
+          curl -fsSL https://raw.githubusercontent.com/kubedb/cli/0.12.0/hack/deploy/kubedb.sh \
+              | bash -s -- --namespace=kubedb --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
     - run:
         name: Install Component Operator from master branch
         command: |
@@ -135,50 +140,44 @@ jobs:
           apiVersion: "v1"
           kind: "List"
           items:
-          - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
-            kind: "Capability"
+          - apiVersion: devexp.runtime.redhat.com/v1alpha2
+            kind: Capability
             metadata:
-              name: "postgresql-db"
+              name: postgres-db
             spec:
-              name: "postgresql-db"
-              class: "dh-postgresql-apb"
-              plan: "dev"
-              secretName: "postgresql-db"
+              category: database
+              kind: postgres
+              version: "10"
               parameters:
-              - name: "postgresql_user"
-                value: "luke"
-              - name: "postgresql_password"
-                value: "secret"
-              - name: "postgresql_database"
-                value: "my_data"
-              - name: "postgresql_version"
-                value: "10"
-          - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
-            kind: "Component"
+              - name: DB_USER
+                value: admin
+              - name: DB_PASSWORD
+                value: admin
+          - apiVersion: devexp.runtime.redhat.com/v1alpha2
+            kind: Component
             metadata:
+              name: fruit-backend-sb
               labels:
-                app: "fruit-backend-sb"
-                version: "0.0.1-SNAPSHOT"
-                group: "dabou"
-              name: "fruit-backend-sb"
+                app: fruit-backend-sb
             spec:
-              name: "fruit-backend-sb"
-              deploymentMode: "dev"
-              runtime: "spring-boot"
-              version: "2.1.3.RELEASE"
-              exposeService: true
+              deploymentMode: build
+              buildConfig:
+                url: https://github.com/snowdrop/component-operator-demo.git
+                ref: master
+                moduleDirName: fruit-backend-sb
+              runtime: spring-boot
+              version: 2.1.3
               envs:
-              - name: "SPRING_PROFILES_ACTIVE"
-                value: "broker-catalog"
+              - name: SPRING_PROFILES_ACTIVE
+                value: postgresql-kubedb
           - apiVersion: "devexp.runtime.redhat.com/v1alpha2"
             kind: "Link"
             metadata:
-              name: "link-to-database"
+              name: "link-to-postgres-db"
             spec:
-              name: "link-to-database"
-              componentName: "fruit-backend-sb"
+              componentName: "fruit-backend-sb-build"
               kind: "Secret"
-              ref: "postgresql-db"
+              ref: "postgres-db-config"
           EOF
 
           echo "Deploy fruit-client-sb"
@@ -193,7 +192,6 @@ jobs:
               labels:
                 app: "fruit-client-sb"
                 version: "0.0.1-SNAPSHOT"
-                group: "dabou"
               name: "fruit-client-sb"
             spec:
               deploymentMode: "dev"
@@ -217,7 +215,7 @@ jobs:
     - run:
         name: Wait till fruit, backend and DB pods are running/ready
         command: |
-          until kubectl get pods -n ${NAMESPACE_TESTING} -l app=rhscl-postgresql-apb | grep "Running"; do sleep 10; done
+          until kubectl get pods -n ${NAMESPACE_TESTING} -l kubedb.com/name=postgres-db | grep "Running"; do sleep 10; done
           until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Running"; do sleep 10; done
           until kubectl get pods -n ${NAMESPACE_TESTING} -l app=fruit-backend-sb | grep "Running"; do sleep 10; done
           until kubectl get components -n ${NAMESPACE_TESTING} -l app=fruit-client-sb | grep "Ready"; do sleep 10; done
@@ -227,7 +225,7 @@ jobs:
         name: Wait and log pods, components, links, capabilities, ...
         command: |
           sleep 600s
-          kubectl get -n ${NAMESPACE_TESTING} all,servicebinding,serviceinstance,pvc > /home/circleci/project/logs/all.txt
+          kubectl get -n ${NAMESPACE_TESTING} all,pvc > /home/circleci/project/logs/all.txt
 
     - run:
         name: Push now the uber jar file of the frontend, backend
