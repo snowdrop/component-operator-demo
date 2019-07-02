@@ -62,14 +62,14 @@ jobs:
         command: |
           /snap/bin/microk8s.enable ingress
 
-    # - run:
-    #     name: Initialize helm
-    #     command: |
-    #       helm init
-    #
-    #       until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
-    #
-    #       kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+    - run:
+        name: Initialize helm
+        command: |
+          helm init
+
+          until kubectl get pods -n kube-system -l name=tiller | grep 1/1; do sleep 1; done
+
+          kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
     # - run:
     #     name: Install ServiceCatalog using helm & OAB
@@ -90,8 +90,12 @@ jobs:
     - run:
         name: Install KubeDB controller and Postgres databases
         command: |
-          curl -fsSL https://raw.githubusercontent.com/kubedb/cli/0.12.0/hack/deploy/kubedb.sh \
-              | bash -s -- --namespace=kubedb --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
+        #  curl -fsSL https://raw.githubusercontent.com/kubedb/cli/0.12.0/hack/deploy/kubedb.sh \
+        #      | bash -s -- --namespace=kubedb --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
+          helm repo add appscode https://charts.appscode.com/stable/
+          helm repo update
+          helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
+          --namespace kube-system --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
     - run:
         name: Install Component Operator from master branch
         command: |
