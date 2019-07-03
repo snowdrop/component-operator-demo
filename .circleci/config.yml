@@ -8,6 +8,8 @@ executors:
     environment:
       KUBE_VERSION: v1.13.0
       MICROK8S_VERSION: 1.13
+      TEKTON_VERSION: v0.4.0
+      KUBEDB_VERSION: 0.12.0
       MINIKUBE_HOME: $HOME
       KUBECONFIG: $HOME/.kube/config
       OPERATOR_GIT_REF: master
@@ -71,6 +73,7 @@ jobs:
 
           kubectl create clusterrolebinding tiller-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
 
+    # DEPRECATED as we don't use anymore OABroker
     # - run:
     #     name: Install ServiceCatalog using helm & OAB
     #     command: |
@@ -87,14 +90,12 @@ jobs:
     #       kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/master/deploy/oab-install.yaml
     #       until kubectl get pods -n automation-broker -l app=automation-broker | grep 2/2; do sleep 10; done
 
-    #  curl -fsSL https://raw.githubusercontent.com/kubedb/cli/0.12.0/hack/deploy/kubedb.sh \
-    #      | bash -s -- --namespace=kubedb --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
     - run:
         name: Install KubeDB Operator using Helm chart
         command: |
           helm repo add appscode https://charts.appscode.com/stable/
           helm repo update
-          helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
+          helm install appscode/kubedb --name kubedb-operator --version ${KUBEDB_VERSION} \
           --namespace kubedb --set apiserver.enableValidatingWebhook=false,apiserver.enableMutatingWebhook=false
     - run:
         name: Wait till KubeDB operator is on, CRDs deployed and install KubeDB Catalog using Helm chart
@@ -105,7 +106,7 @@ jobs:
             TIMER=$((TIMER + 1))
           done
 
-          helm install appscode/kubedb-catalog --name kubedb-catalog --version 0.12.0 \
+          helm install appscode/kubedb-catalog --name kubedb-catalog --version ${KUBEDB_VERSION} \
           --namespace kubedb --set catalog.postgres=true,catalog.elasticsearch=false,catalog.etcd=false,catalog.memcached=false,catalog.mongo=false,catalog.mysql=false,catalog.redis=false
 
     - run:
@@ -119,6 +120,11 @@ jobs:
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/component_v1alpha2.yaml
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/crds/link_v1alpha2.yaml
           kubectl apply -f https://raw.githubusercontent.com/snowdrop/component-operator/${OPERATOR_GIT_REF}/deploy/operator.yaml -n component-operator
+
+    - run:
+        name: Install Tekton Operator to perform build tasks
+        command: |
+          kubectl apply -f https://storage.googleapis.com/tekton-releases/previous/${TEKTON_VERSION}/release.yaml
 
     - restore_cache:
         keys:
@@ -176,7 +182,7 @@ jobs:
               labels:
                 app: fruit-backend-sb
             spec:
-              deploymentMode: build
+              deploymentMode: dev
               buildConfig:
                 url: https://github.com/snowdrop/component-operator-demo.git
                 ref: master
