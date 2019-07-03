@@ -21,7 +21,7 @@ function printTitle {
 
 kubectl create ns demo
 printTitle "Deleting the resources components, links and capabilities"
-kubectl delete components,link,capabilities --all -n demo
+kubectl delete components,links,capabilities --all -n demo
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
