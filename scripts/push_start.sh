@@ -14,7 +14,7 @@ if [ $runtime = "nodejs" ]; then
   oc rsync $project/ $name:/opt/app-root/src/ --no-perms=true
 else
   cmd="run-java"
-  oc cp ${project}/target/${project}-0.0.1-SNAPSHOT.jar $name:/deployments/app.jar
+  oc cp ${project}/target/${project}-0.0.1-SNAPSHOT.jar $name:/deployments/${project}-0.0.1-SNAPSHOT.jar
 fi
 
 oc rsh $pod_name /var/lib/supervisord/bin/supervisord ctl stop $cmd
