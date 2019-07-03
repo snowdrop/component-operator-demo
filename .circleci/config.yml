@@ -258,6 +258,7 @@ jobs:
         command: |
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
+          sleep 60s
 
     - run:
         name: Log of Frontend, Backend applications, pod configuration and their ENV variables
