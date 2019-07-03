@@ -244,7 +244,7 @@ jobs:
     - run:
         name: Wait and log pods, components, links, capabilities, ...
         command: |
-          sleep 300s
+          sleep 240s
           kubectl get -n ${NAMESPACE_TESTING} all,pvc > /home/circleci/project/logs/all.txt
 
     - run:
@@ -258,7 +258,18 @@ jobs:
         command: |
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
-          sleep 60s
+
+          echo "Wait until Spring Boot actuator health replies UP for both microservices"
+          for i in fruit-backend-sb fruit-client-sb
+            do
+            HTTP_RESPONSE=$(kubectl exec -n ${NAMESPACE_TESTING} $(kubectl get pod -n ${NAMESPACE_TESTING} -lapp=$i | grep "Running" | awk '{print $1}') -- curl -L -w "HTTPSTATUS:%{http_code}" -s localhost:8080/actuator/health 2>&1)
+            HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+            until [ "$HTTP_BODY" == "$EXPECTED_RESPONSE" ]; do
+              echo "Wait 5s ...."
+              echo "$i: Response is : $HTTP_BODY, expected is : $EXPECTED_RESPONSE"
+              sleep 5s
+            done
+          done
 
     - run:
         name: Log of Frontend, Backend applications, pod configuration and their ENV variables
