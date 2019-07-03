@@ -2,6 +2,7 @@
 
 #
 # Prerequisite : install tool jq
+# This script assumes that KubeDB & Component operators are installed
 #
 # End to end scenario to be executed on minikube, minishift or k8s cluster
 # Example: ./scripts/end-to-end.sh CLUSTER_IP
@@ -27,7 +28,7 @@ echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
 printTitle "Deploy the component for the fruit-backend, link and capability"
-cat \<<EOF | kubectl apply -n ${NS} -f -
+cat <<EOF | kubectl apply -n ${NS} -f -
 ---
 apiVersion: "v1"
 kind: "List"
@@ -75,7 +76,7 @@ echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
 printTitle "Deploy the component for the fruit-client, link"
-cat \<<EOF | kubectl apply -n ${NAMESPACE_TESTING} -f -
+cat <<EOF | kubectl apply -n ${NS} -f -
 ---
 apiVersion: "v1"
 kind: "List"
@@ -112,14 +113,14 @@ printTitle "Report status : ${TIME}" > ${REPORT_FILE}
 
 printTitle "1. Status of the resources created using the CRDs : Component, Link or Capability" >> ${REPORT_FILE}
 if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
-  for i in components links capabilities pods deployments deploymentconfigs services routes pvc serviceinstances servicebindings secret/postgresql-db
+  for i in components links capabilities pods deployments deploymentconfigs services routes pvc postgreses secret/postgres-db-config
   do
     printTitle "$(echo $i | tr a-z A-Z)" >> ${REPORT_FILE}
     kubectl get $i -n ${NS} >> ${REPORT_FILE}
     printf "\n" >> ${REPORT_FILE}
   done
 else
-  for i in components links capabilities pods deployments servicces ingresses pvc serviceinstances servicebindings secret/postgresql-db
+  for i in components links capabilities pods deployments servicces ingresses pvc postgreses secret/postgres-db-config
   do
     printTitle "$(echo $i | tr a-z A-Z)" >> ${REPORT_FILE}
     kubectl get $i -n ${NS} >> ${REPORT_FILE}
@@ -137,7 +138,7 @@ printTitle "3. ENV var defined for the fruit client component" >> ${REPORT_FILE}
 for item in $(kubectl get pod -n ${NS} -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
-printTitle "Push fruit and backend"
+printTitle "Push fruit client and backend"
 ./scripts/k8s_push_start.sh fruit-backend sb ${NS}
 ./scripts/k8s_push_start.sh fruit-client sb ${NS}
 

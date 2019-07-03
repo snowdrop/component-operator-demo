@@ -2,6 +2,7 @@
 
 #
 # Prerequisite : install tool jq
+# This script assumes that KubeDB & Component operators are installed
 #
 # End to end scenario to be executed on minikube, minishift or k8s cluster
 # Example: ./scripts/end-to-end.sh CLUSTER_IP
