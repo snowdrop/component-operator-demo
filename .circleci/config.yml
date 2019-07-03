@@ -90,18 +90,20 @@ jobs:
     #  curl -fsSL https://raw.githubusercontent.com/kubedb/cli/0.12.0/hack/deploy/kubedb.sh \
     #      | bash -s -- --namespace=kubedb --install-catalog=postgres --enable-validating-webhook=false --enable-mutating-webhook=false
     - run:
-        name: Install KubeDB controller and Postgres databases
+        name: Install KubeDB Operator using Helm chart
         command: |
           helm repo add appscode https://charts.appscode.com/stable/
           helm repo update
           helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
           --namespace kubedb --set apiserver.enableValidatingWebhook=false,apiserver.enableMutatingWebhook=false
-
+    - run:
+        name: Wait till KubeDB operator is on and install KubeDB Catalog using Helm chart
+        command: |
           # Wait until the kubedb operator is ready before moving on
           until kubectl get pods -n kubedb -l app=kubedb | grep Running; do sleep 1; done
 
           helm install appscode/kubedb-catalog --name kubedb-catalog --version 0.12.0 \
-          --namespace kubedb --set catalog.postgres=true
+          --namespace kubedb --set catalog.postgres=true,catalog.elasticsearch=false,catalog.etcd=false,catalog.memcached=false,catalog.mongodb=false,catalog.mysql=false,catalog.redis=false
 
     - run:
         name: Install Component Operator from master branch
