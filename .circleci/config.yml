@@ -246,7 +246,7 @@ jobs:
     - run:
         name: Wait and log pods, components, links, capabilities, ...
         command: |
-          sleep 600s
+          sleep 300s
           kubectl get -n ${NAMESPACE_TESTING} all,pvc > /home/circleci/project/logs/all.txt
 
     - run:
