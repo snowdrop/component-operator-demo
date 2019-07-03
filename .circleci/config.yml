@@ -197,7 +197,7 @@ jobs:
             metadata:
               name: "link-to-postgres-db"
             spec:
-              componentName: "fruit-backend-sb-build"
+              componentName: "fruit-backend-sb"
               kind: "Secret"
               ref: "postgres-db-config"
           EOF
