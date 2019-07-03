@@ -256,6 +256,7 @@ jobs:
     - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
+          set -x
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
           ./scripts/k8s_push_start.sh fruit-client sb ${NAMESPACE_TESTING}
 
