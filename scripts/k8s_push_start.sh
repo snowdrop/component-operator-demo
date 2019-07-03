@@ -16,7 +16,7 @@ if [ $runtime = "nodejs" ]; then
   kubectl rsync $project/ $pod_id:/opt/app-root/src/ --no-perms=true -n ${namespace}
 else
   cmd="run-java"
-  kubectl cp ${project}/target/${project}-0.0.1-SNAPSHOT.jar $pod_id:/deployments/app.jar -n ${namespace}
+  kubectl cp ${project}/target/${project}-0.0.1-SNAPSHOT.jar $pod_id:/deployments/${project}-0.0.1-SNAPSHOT.jar -n ${namespace}
 fi
 
 kubectl exec $pod_id -n ${namespace} /var/lib/supervisord/bin/supervisord ctl stop $cmd
