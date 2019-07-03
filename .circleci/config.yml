@@ -97,6 +97,9 @@ jobs:
           helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
           --namespace kubedb --set apiserver.enableValidatingWebhook=false,apiserver.enableMutatingWebhook=false
 
+          # Wait until the kubedb operator is ready before moving on
+          until kubectl get pods -n kubedb -l app=kubedb | grep Running; do sleep 1; done
+
           helm install appscode/kubedb-catalog --name kubedb-catalog --version 0.12.0 \
           --namespace kubedb --set catalog.postgres=true
 
