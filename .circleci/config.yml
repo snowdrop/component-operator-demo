@@ -250,6 +250,12 @@ jobs:
           kubectl get -n ${NAMESPACE_TESTING} all,pvc > /home/circleci/project/logs/all.txt
 
     - run:
+        name: Log component operator
+        command: |
+          pod_id=$(kubectl get pod -l name=component-operator -n component-operator | grep "Running" | awk '{print $1}')
+          kubectl get -n component-operator ${pod_id} > /home/circleci/project/logs/component-operator.txt
+
+    - run:
         name: Push now the uber jar file of the frontend, backend
         command: |
           ./scripts/k8s_push_start.sh fruit-backend sb ${NAMESPACE_TESTING}
