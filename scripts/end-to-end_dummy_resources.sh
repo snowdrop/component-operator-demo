@@ -13,6 +13,7 @@ NS=${2:-test1}
 SLEEP_TIME=60s
 TIME=$(date +"%Y-%m-%d_%H-%M")
 REPORT_FILE="result_${TIME}.txt"
+EXPECTED_RESPONSE='{"status":"UP"}'
 
 INGRESS_RESOURCES=$(kubectl get ing 2>&1)
 
@@ -140,12 +141,16 @@ printTitle "Push fruit client and backend"
 ./scripts/k8s_push_start.sh fruit-backend sb ${NS}
 ./scripts/k8s_push_start.sh fruit-client sb ${NS}
 
-n=0
-until [ $n -ge 10 ]
-do
-  (kubectl exec -n ${NS} $(kubectl get pod -n ${NS} -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') -- curl -s localhost:8080/actuator/health | grep UP) && break
-  n=$[$n+1]
-  sleep 20
+echo "Wait until Spring Boot actuator health replies UP for both microservices"
+for i in fruit-backend-sb fruit-client-sb
+  do
+  HTTP_RESPONSE=$(kubectl exec -n ${NS} $(kubectl get pod -n ${NS} -lapp=$i | grep "Running" | awk '{print $1}') -- curl -L -w "HTTPSTATUS:%{http_code}" -s localhost:8080/actuator/health 2>&1)
+  HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+  until [ "$HTTP_BODY" == "$EXPECTED_RESPONSE" ]; do
+    echo "Wait 5s ...."
+    echo "$i: Response is : $HTTP_BODY, expected is : $EXPECTED_RESPONSE"
+    sleep 5s
+  done
 done
 
 printTitle "Curl Fruit service"
