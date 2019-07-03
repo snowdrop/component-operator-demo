@@ -97,10 +97,13 @@ jobs:
           helm install appscode/kubedb --name kubedb-operator --version 0.12.0 \
           --namespace kubedb --set apiserver.enableValidatingWebhook=false,apiserver.enableMutatingWebhook=false
     - run:
-        name: Wait till KubeDB operator is on and install KubeDB Catalog using Helm chart
+        name: Wait till KubeDB operator is on, CRDs deployed and install KubeDB Catalog using Helm chart
         command: |
-          # Wait until the kubedb operator is ready before moving on
-          until kubectl get pods -n kubedb -l app=kubedb | grep Running; do sleep 1; done
+          TIMER=0
+          until kubectl get crd elasticsearchversions.catalog.kubedb.com memcachedversions.catalog.kubedb.com mongodbversions.catalog.kubedb.com mysqlversions.catalog.kubedb.com postgresversions.catalog.kubedb.com redisversions.catalog.kubedb.com || [[ ${TIMER} -eq 60 ]]; do
+            sleep 2
+            TIMER=$((TIMER + 1))
+          done
 
           helm install appscode/kubedb-catalog --name kubedb-catalog --version 0.12.0 \
           --namespace kubedb --set catalog.postgres=true,catalog.elasticsearch=false,catalog.etcd=false,catalog.memcached=false,catalog.mongodb=false,catalog.mysql=false,catalog.redis=false
