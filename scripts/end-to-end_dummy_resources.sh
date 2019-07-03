@@ -98,10 +98,8 @@ items:
   metadata:
     name: "link-to-fruit-backend"
   spec:
-    name: "link-to-fruit-backend"
     kind: "Env"
     componentName: "fruit-client-sb"
-    ref: ""
     envs:
     - name: "ENDPOINT_BACKEND"
       value: "http://fruit-backend-sb:8080/api/fruits"
@@ -120,7 +118,7 @@ if [ "$INGRESS_RESOURCES" == "No resources found." ]; then
     printf "\n" >> ${REPORT_FILE}
   done
 else
-  for i in components links capabilities pods deployments servicces ingresses pvc postgreses secret/postgres-db-config
+  for i in components links capabilities pods deployments services ingresses pvc postgreses secret/postgres-db-config
   do
     printTitle "$(echo $i | tr a-z A-Z)" >> ${REPORT_FILE}
     kubectl get $i -n ${NS} >> ${REPORT_FILE}
