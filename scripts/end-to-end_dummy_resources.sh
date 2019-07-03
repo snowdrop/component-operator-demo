@@ -140,8 +140,13 @@ printTitle "Push fruit client and backend"
 ./scripts/k8s_push_start.sh fruit-backend sb ${NS}
 ./scripts/k8s_push_start.sh fruit-client sb ${NS}
 
-echo "Sleep ${SLEEP_TIME}"
-sleep ${SLEEP_TIME}
+n=0
+until [ $n -ge 10 ]
+do
+  (kubectl exec -n ${NS} $(kubectl get pod -n ${NS} -lapp=fruit-backend-sb | grep "Running" | awk '{print $1}') -- curl -s localhost:8080/actuator/health | grep UP) && break
+  n=$[$n+1]
+  sleep 20
+done
 
 printTitle "Curl Fruit service"
 printTitle "4. Curl Fruit Endpoint service"  >> ${REPORT_FILE}
