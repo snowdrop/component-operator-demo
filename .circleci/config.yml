@@ -253,7 +253,7 @@ jobs:
         name: Log component operator
         command: |
           pod_id=$(kubectl get pod -l name=component-operator -n component-operator | grep "Running" | awk '{print $1}')
-          kubectl get -n component-operator ${pod_id} > /home/circleci/project/logs/component-operator.txt
+          kubectl logs -n component-operator ${pod_id} > /home/circleci/project/logs/component-operator.txt
 
     - run:
         name: Push now the uber jar file of the frontend, backend
