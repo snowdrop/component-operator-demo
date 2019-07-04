@@ -20,7 +20,15 @@ function deleteResources() {
   result=$(kubectl api-resources --verbs=list --namespaced -o name)
   for i in $result[@]
   do
-    kubectl delete $i --all -n $1
+    kubectl delete $i --ignore-not-found=true --all -n $1
+  done
+}
+
+function listAllK8sResources() {
+  result=$(kubectl api-resources --verbs=list --namespaced -o name)
+  for i in $result[@]
+  do
+    kubectl get $i --ignore-not-found=true -n $1
   done
 }
 
@@ -175,8 +183,8 @@ kubectl delete components,links,capabilities --all -n ${NS}
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-echo "Delete pending resources using ApiServices registered"
+printTitle  "Delete pending resources using ApiServices registered"
 deleteResources $NS
 
-echo "Delete namespace $NS"
+printTitle  "Delete namespace $NS"
 kubectl delete ns $NS
