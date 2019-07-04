@@ -37,13 +37,8 @@ function printTitle {
   printf "$r\n$1\n$r\n"
 }
 
-
-printTitle "Creating the namespace"
-kubectl create ns ${NS}
-
-printTitle "Deploy the component for the fruit-backend, link and capability"
+function createPostgresqlCapability() {
 cat <<EOF | kubectl apply -n ${NS} -f -
----
 apiVersion: "v1"
 kind: "List"
 items:
@@ -60,6 +55,13 @@ items:
       value: admin
     - name: DB_PASSWORD
       value: admin
+EOF
+}
+function createFruitBackend() {
+cat <<EOF | kubectl apply -n ${NS} -f -
+apiVersion: "v1"
+kind: "List"
+items:
 - apiVersion: devexp.runtime.redhat.com/v1alpha2
   kind: Component
   metadata:
@@ -86,10 +88,8 @@ items:
     kind: "Secret"
     ref: "postgres-db-config"
 EOF
-echo "Sleep ${SLEEP_TIME}"
-sleep ${SLEEP_TIME}
-
-printTitle "Deploy the component for the fruit-client, link"
+}
+function createFruitClient() {
 cat <<EOF | kubectl apply -n ${NS} -f -
 ---
 apiVersion: "v1"
@@ -118,6 +118,25 @@ items:
     - name: "ENDPOINT_BACKEND"
       value: "http://fruit-backend-sb:8080/api/fruits"
 EOF
+}
+function createAll() {
+  createPostgresqlCapability
+  createFruitBackend
+  createFruitClient
+}
+
+
+printTitle "Creating the namespace"
+kubectl create ns ${NS}
+
+printTitle "Deploy the component for the fruit-backend, link and capability"
+createPostgresqlCapability
+createFruitBackend
+echo "Sleep ${SLEEP_TIME}"
+sleep ${SLEEP_TIME}
+
+printTitle "Deploy the component for the fruit-client, link"
+createFruitClient
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
