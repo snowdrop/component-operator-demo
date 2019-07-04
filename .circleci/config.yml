@@ -268,10 +268,9 @@ jobs:
           do
             HTTP_BODY=""
             pod_id=$(kubectl get pod -n $NS -lapp=$i | grep "Running" | awk '{print $1}')
-            kube_exec="kubectl exec -n $NS $pod_id"
             until [ "$HTTP_BODY" == "$EXPECTED_RESPONSE" ]; do
               echo "Check $i actuator"
-              HTTP_RESPONSE=$($kube_exec -- curl -L -w "HTTPSTATUS:%{http_code}" -s $url 2>&1)
+              HTTP_RESPONSE=$(kubectl exec -n $NS $pod_id -- curl -L -w "HTTPSTATUS:%{http_code}" -s $url 2>&1)
               HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
               HTTP_STATUS=$(echo $HTTP_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
               echo $HTTP_BODY
