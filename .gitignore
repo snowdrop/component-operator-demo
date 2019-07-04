@@ -6,3 +6,4 @@
 */licenses/
 deploy/
 scripts/test.sh
+scripts/simple.sh
