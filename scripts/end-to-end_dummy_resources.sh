@@ -14,8 +14,15 @@ SLEEP_TIME=30s
 TIME=$(date +"%Y-%m-%d_%H-%M")
 REPORT_FILE="result_${TIME}.txt"
 EXPECTED_RESPONSE='{"status":"UP"}'
-
 INGRESS_RESOURCES=$(kubectl get ing 2>&1)
+
+function deleteResources() {
+  result=$(kubectl api-resources --verbs=list --namespaced -o name)
+  for i in $result[@]
+  do
+    kubectl delete $i --all -n $1
+  done
+}
 
 function printTitle {
   r=$(typeset i=${#1} c="=" s="" ; while ((i)) ; do ((i=i-1)) ; s="$s$c" ; done ; echo  "$s" ;)
@@ -132,7 +139,7 @@ printf "\n" >> ${REPORT_FILE}
 printTitle "3. ENV var defined for the fruit client component" >> ${REPORT_FILE}
 # kubectl describe -n ${NS} pod/$(kubectl get pod -n ${NS} -lapp=fruit-client-sb | grep "Running" | awk '{print $1}') >> ${REPORT_FILE}
 # See jsonpath examples : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
-for item in $(kubectl get pod -n ${NS} -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
+for item in $(kubectl get pod -n ${NS} -lapp=fruit-client-sb --output=name); do printf "Envs for %s\n" "$item" | grep --color -E '[^/]+$' && kubectl get "$item" -n ${NS} --output=json | jq -r -S '.spec.containers[0].env[] | " \(.name)=\(.value)"' 2>/dev/null; printf "\n"; done >> ${REPORT_FILE}
 printf "\n" >> ${REPORT_FILE}
 
 printTitle "Push fruit client and backend"
@@ -165,8 +172,11 @@ fi
 
 printTitle "Delete the resources components, links and capabilities"
 kubectl delete components,links,capabilities --all -n ${NS}
-kubectl delete service/kubedb secret/postgres-db-config -n test1
-
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
-kubectl delete ns ${NS}
+
+echo "Delete pending resources using ApiServices registered"
+deleteResources $NS
+
+echo "Delete namespace $NS"
+kubectl delete ns $NS
