@@ -202,6 +202,9 @@ kubectl delete components,links,capabilities --all -n ${NS}
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
+#printTitle "List all resources"
+#listAllK8sResources $NS
+
 printTitle  "Delete pending resources using ApiServices registered"
 deleteResources $NS
 
