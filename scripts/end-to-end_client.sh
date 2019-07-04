@@ -73,8 +73,8 @@ EOF
 echo "Sleep ${SLEEP_TIME}"
 sleep ${SLEEP_TIME}
 
-printTitle "List all resources"
-listAllK8sResources $NS
+#printTitle "List all resources"
+#listAllK8sResources $NS
 
 printTitle "Delete the resources components, links and capabilities"
 kubectl delete components,links --all -n ${NS}
