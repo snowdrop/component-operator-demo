@@ -165,4 +165,4 @@ else
     curl -H "Host: fruit-client-sb" ${FRONTEND_ROUTE_URL}/api/client >> ${REPORT_FILE}
 fi
 
-# kubectl delete ns ${NS}
+kubectl delete ns ${NS}
